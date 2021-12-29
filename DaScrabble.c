@@ -24,9 +24,27 @@ typedef struct{
 }DataPemain;
 
 int main(){
+	//Kamus Data
 	IsiPapan Papan;
 	DataPemain Pemain;
-	printf("DaScrabble");
+	int pilih;
+	printf("DaScrabble\n\n");
+	printf("1. Main\n");
+	printf("2. Papan Peringkat\n");
+	printf("3. Cara Bermain\n");
+	printf("4. Tentang\n");
+	printf("5. Keluar\n");
+	printf("\nInput nomor menu: ");
+	scanf("%d", &pilih);
+	
+	switch(pilih){
+		case 1 : printf("Main"); break;
+		case 2 : printf("Papan Peringkat"); break;
+		case 3 : printf("Cara Bermain"); break;
+		case 4 : printf("Tentang"); break;
+		case 5 : printf("Keluar"); break;
+		default : printf("Ulang");
+	}
 	
 	return 0;
 }
