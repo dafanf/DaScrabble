@@ -71,7 +71,7 @@ int main(){
 				break;
 			default : printf("Menu tidak tersedia.");
 		}
-	} while(pilihMenu > 5);
+	} while(pilihMenu < 1 || pilihMenu > 5);
 	
 	return 0;
 }
@@ -145,7 +145,7 @@ int  pilihPemain(){
 				break;
 			default : printf("Pilihan tidak tersedia.");
 		}
-	} while(pilih > 2);
+	} while(pilih > 2 || pilih < 1);
 	
 	return pemain;
 }
@@ -157,6 +157,16 @@ void inputNama(int pilihan){
 		scanf("%s", Pemain[0].nama_pemain);
 		printf("\nNama Pemain 2 (maks. 30 karakter): ");
 		scanf("%s", Pemain[1].nama_pemain);
+	}
+	else{
+		printf("Nama Pemain 1 (maks. 30 karakter): ");
+		scanf("%s", Pemain[0].nama_pemain);
+		Pemain[1].nama_pemain[0] = 'D';
+		Pemain[1].nama_pemain[1] = 'a';
+		Pemain[1].nama_pemain[2] = 's';
+		Pemain[1].nama_pemain[3] = 'c';
+		Pemain[1].nama_pemain[4] = 'o';
+		Pemain[1].nama_pemain[5] = 'm';
 	}
 }
 
@@ -183,7 +193,7 @@ int  pilihLevel(){
 			default : printf("Level tidak tersedia.");
 		}
 		
-	} while(pilih > 3);
+	} while(pilih < 1 || pilih > 3);
 	
 	return level;
 }
