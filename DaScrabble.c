@@ -16,6 +16,11 @@ int  pilihPemain();
 void inputNama(int pilihan);
 int  pilihLevel();
 
+//Deklarasi Modul saat permainan
+void inisialisasiPapan();
+void printPapan();
+int getPosisi(int *baris, int *kolom);
+int getArah(int *arah);
 
 typedef struct {
 	char huruf;
@@ -24,7 +29,7 @@ typedef struct {
 } DataHuruf;
 
 typedef struct {
-	DataHuruf isiHuruf;
+	char isiHuruf;
 	bool isLetter2;
 	bool isLetter3;
 	bool isWord2;
@@ -39,7 +44,7 @@ typedef struct{
 }DataPemain;
 
 //Kamus Data Global
-IsiPapan Papan;
+IsiPapan Papan[15][15];
 DataPemain Pemain[2];
 
 int main(){
@@ -78,21 +83,62 @@ int main(){
 
 void mulaiPermainan(){
 	int level;
+	int pilihMain;
+	int result;
+	int baris, kolom, arah;
 	
 	system("cls");
 	level = registPemain();
+	
 	system("cls");
-	printf("Pemain 1 : %s", Pemain[0].nama_pemain);
-	printf("\nPemain 2 : %s", Pemain[1].nama_pemain);
+	inisialisasiPapan();
 	
 	switch(level){
-		case 1 : printf("\nLevel : Easy");
+		case 1 : printf("\n  Level : Easy");
 			break;
-		case 2 : printf("\nLevel : Medium");
+		case 2 : printf("\n  Level : Medium");
 			break;
-		case 3 : printf("\nLevel : Hard");
+		case 3 : printf("\n  Level : Hard");
 			break;
 	}
+	printf("\n  %s vs. %s", Pemain[0].nama_pemain, Pemain[1].nama_pemain);
+	printf("\n  Skor %s : %d \t\t Skor %s : %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
+	
+	printPapan();
+	
+	printf("\n\n  Giliran: Bambang \t  Waktu: 01:23\t  Sisa Huruf: 84");
+	printf("\n\n\t\tA B C D E F G H I");
+	printf("\n\n\t\t1 2 3 4 5 6 7 8 9");
+	
+	restart:
+	printf("\n\n  1. Jawab");
+	printf("\n  2. Pass");
+	printf("\n  3. Menyerah");
+	printf("\n  Masukkan pilihan : ");
+	scanf("%d", &pilihMain);
+	fflush(stdin);
+	if(pilihMain==1){
+		// input baris kolom
+		do{
+			result = getPosisi(&baris, &kolom);
+		}while(result == 0);
+		if(result == -1){
+			goto restart;
+		}
+			
+		// input horizontal atau vertikal
+		do{
+			result = getArah(&arah);
+		}while(result == 0);
+		if(result == -1){
+			goto restart;
+		}
+	}
+	
+	printf("\n  baris : %d",baris);
+	printf("\n  kolom : %d",kolom);
+	printf("\n  arah : %d",arah);
+	//printf("\n  baris : %s",kata);
 }
 
 void tampilLeaderboard(){
@@ -149,6 +195,7 @@ int  pilihPemain(){
 	
 	return pemain;
 }
+
 void inputNama(int pilihan){
 	system("cls");
 	printf("Pastikan mengisi nama dengan benar, karena hanya 1 kali kesempatan.\n\n");
@@ -198,5 +245,147 @@ int  pilihLevel(){
 	return level;
 }
 
+void inisialisasiPapan(){
+	int i, j;
+	
+	for(i=0; i<15; i++){
+		for(j=0; j<16; j++){
+			Papan[i][j].isLetter2 = false;
+            Papan[i][j].isLetter3 = false;
+            Papan[i][j].isWord2 = false;
+            Papan[i][j].isWord3 = false;
+            Papan[i][j].isiHuruf = ' ';
+            if ((i==0 || i==7 || i==14) && (j==0 || j==7 || j==14)){
+            	if(i==7 && j==7){
+            		Papan[i][j].isiHuruf= '*';
+				}
+				else{
+					Papan[i][j].isWord3= true;
+				}
+			}
+            else if ((i==5 || i==9) && ((j-1)%4==0)){
+            	Papan[i][j].isLetter3 = true;
+			}
+            else if ((j==5 || j==9) && ((i-1)%4==0)){
+            	Papan[i][j].isLetter3 = true;
+			}
+            else if ((i==6 || i==8) && (j==2 || j==6 || j==8 || j==12)){
+            	Papan[i][j].isLetter2 = true;
+			}
+            else if ((j==6 || j==8) && (i==2 || i==6 || i==8 || i==12)){
+            	Papan[i][j].isLetter2 = true;
+			}
+            else if ((i==3 || i==11) && (j==0 || j==7 || j==14)){
+            	Papan[i][j].isLetter2 = true;
+			}
+            else if ((j==3 || j==11) && (i==0 || i==7 || i==14)){
+            	Papan[i][j].isLetter2 = true;
+			}
+            else if (i==j || i==(14-j)){
+            	Papan[i][j].isWord2 = true;
+			}
+		}
+	}
+}
+
+void printPapan(){
+	int i, x, y;
+	char temp;
+	
+	printf("  ");
+	for(i=1;i<=15;i++){
+		if(i>9){
+			printf(" %d ",i);		// kolom 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+		}
+		else{
+			printf(" %d  ",i);		// kolom 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+		}
+	}
+			
+	printf("\n \xda");
+	for(i=1;i<=15-1;i++){
+		printf("\xc4\xc4\xc4\xc2");
+	}
+	printf("\xc4\xc4\xc4\xbf");
+
+	printf("\n");
+	for(y = 0;y<15;y++){
+		printf("%c\xb3",y+'a'); //baris a|
+		for(x = 0;x<15;x++){
+			if(Papan[y][x].isLetter2 && Papan[y][x].isiHuruf==' '){
+				temp='2';
+			}
+			else if(Papan[y][x].isLetter3 && Papan[y][x].isiHuruf==' '){
+				temp='3';
+			}
+			else if(Papan[y][x].isWord2 && Papan[y][x].isiHuruf==' '){
+				temp='2';
+			}
+			else if(Papan[y][x].isWord3 && Papan[y][x].isiHuruf==' '){
+				temp='3';
+			}
+			else{
+				temp = Papan[y][x].isiHuruf;
+			}
+			printf(" %c \xb3",temp);				// X | O | X | O | X |
+		}
+
+		printf((y<15-1) ? "\n \xc3" : "\n \xc0");
+		for(i=1;i<=15;i++){
+			printf((i==15) ? ((y<15-1) ? "\xc4\xc4\xc4\xb4" : "\xc4\xc4\xc4\xd9") : ((y<15-1) ? "\xc4\xc4\xc4\xc5" : "\xc4\xc4\xc4\xc1"));
+		}
+		printf("\n");
+	}
+}
+
+int getPosisi(int *baris, int *kolom){
+	char row;
+	int col;
+	
+	printf("\n  Masukkan posisi huruf pertama (contoh: H8) : ");
+	scanf("%c%d", &row, &col);
+	fflush(stdin);
+	
+	row &= 0x5F;
+	
+	*baris = row - 0x41;
+	if(*baris < 0 || *baris > 14){
+		printf("  Posisi tidak valid, coba lagi.\n");
+		return 0;
+	}
+	
+	*kolom = col - 1;
+	if(*kolom < 0 || *kolom > 14){
+		printf("  Posisi tidak valid, coba lagi.\n");
+		return 0;
+	}
+	
+	return 1;
+}
+
+int getArah(int *arah){
+	char dir;
+	
+	printf("\n  Masukkan arah susuh Horizontal(H) atau Vertikal(V), (ENTER) untuk mengulang : ");
+	scanf("%c", &dir);
+	fflush(stdin);
+	
+	if(dir == 'H' || dir == 'h'){
+		*arah = 0;
+		return 1;
+	}
+	else if(dir == 'V' || dir == 'v'){
+		*arah = 1;
+		return 1;
+	}
+	else if(dir == '\n'){
+		return -1;
+	}
+	else{
+		printf("  Arah tidak valid, coba lagi.\n");
+	}
+		
+	return 0;
+}
 
 
