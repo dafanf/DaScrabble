@@ -86,6 +86,10 @@ void mulaiPermainan(){
 	int pilihMain;
 	int result;
 	int baris, kolom, arah;
+	int giliran = -1;
+	int jumPass = 0;
+	bool isMenyerah = false;
+	bool isHabis = false;
 	
 	system("cls");
 	level = registPemain();
@@ -93,52 +97,58 @@ void mulaiPermainan(){
 	system("cls");
 	inisialisasiPapan();
 	
-	switch(level){
-		case 1 : printf("\n  Level : Easy");
-			break;
-		case 2 : printf("\n  Level : Medium");
-			break;
-		case 3 : printf("\n  Level : Hard");
-			break;
-	}
-	printf("\n  %s vs. %s", Pemain[0].nama_pemain, Pemain[1].nama_pemain);
-	printf("\n  Skor %s : %d \t\t Skor %s : %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
-	
-	printPapan();
-	
-	printf("\n\n  Giliran: Bambang \t  Waktu: 01:23\t  Sisa Huruf: 84");
-	printf("\n\n\t\tA B C D E F G H I");
-	printf("\n\n\t\t1 2 3 4 5 6 7 8 9");
-	
-	restart:
-	printf("\n\n  1. Jawab");
-	printf("\n  2. Pass");
-	printf("\n  3. Menyerah");
-	printf("\n  Masukkan pilihan : ");
-	scanf("%d", &pilihMain);
-	fflush(stdin);
-	if(pilihMain==1){
-		// input baris kolom
-		do{
-			result = getPosisi(&baris, &kolom);
-		}while(result == 0);
-		if(result == -1){
-			goto restart;
+	do{
+		giliran = (giliran + 1) % 2;
+		system("cls");
+		switch(level){
+			case 1 : printf("\n  Level : Easy");
+				break;
+			case 2 : printf("\n  Level : Medium");
+				break;
+			case 3 : printf("\n  Level : Hard");
+				break;
 		}
-			
-		// input horizontal atau vertikal
-		do{
-			result = getArah(&arah);
-		}while(result == 0);
-		if(result == -1){
-			goto restart;
+		
+		printf("\n  %s vs. %s", Pemain[0].nama_pemain, Pemain[1].nama_pemain);
+		printf("\n  Skor %s : %d \t\t Skor %s : %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
+		
+		printPapan();
+		
+		printf("\n\n  Giliran: %s \t  Waktu: 01:23\t  Sisa Huruf: 84", Pemain[giliran].nama_pemain);
+		printf("\n\n\t\tA B C D E F G H I");
+		printf("\n\n\t\t1 2 3 4 5 6 7 8 9");
+		
+		restart:
+		printf("\n\n  1. Jawab");
+		printf("\n  2. Pass");
+		printf("\n  3. Menyerah");
+		printf("\n  Masukkan pilihan : ");
+		scanf("%d", &pilihMain);
+		fflush(stdin);
+		if(pilihMain==1){
+			// input baris kolom
+			do{
+				result = getPosisi(&baris, &kolom);
+			}while(result == 0);
+			if(result == -1){
+				goto restart;
+			}
+				
+			// input horizontal atau vertikal
+			do{
+				result = getArah(&arah);
+			}while(result == 0);
+			if(result == -1){
+				goto restart;
+			}
 		}
-	}
+		
+		printf("\n  baris : %d",baris);
+		printf("\n  kolom : %d",kolom);
+		printf("\n  arah : %d",arah);
+		//printf("\n  baris : %s",kata);
+	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	
-	printf("\n  baris : %d",baris);
-	printf("\n  kolom : %d",kolom);
-	printf("\n  arah : %d",arah);
-	//printf("\n  baris : %s",kata);
 }
 
 void tampilLeaderboard(){
