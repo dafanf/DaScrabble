@@ -27,6 +27,9 @@ int getKata(char *kata, int baris, int kolom, int arah);
 int cekPosisiKata(char *kata, int baris, int kolom, int arah);
 void insertKePapan(char *temp, int baris, int kolom, int arah);
 
+//Deklarasi Modul yang berhubungan dengan File
+void bukaKamus();
+
 typedef struct {
 	char huruf;
 	int nilaiHuruf;
@@ -517,5 +520,19 @@ void insertKePapan(char *temp, int baris, int kolom, int arah){
 	}
 	
 	printf("\n %s", temp);
+}
+
+void bukaKamus()
+{
+    char kata[100];
+	FILE *in=fopen("words2.txt","r");
+        while(!feof(in)){
+           fscanf(in,"%[^\n]\n", &kata);fflush(stdin);   
+           // %[^#] artinya kita menyimpan bagian dari string dalam file sampai tanda #. 
+           // Kita tidak menggunnakan %s karena nama mengandung spasi
+           printf("%s %d\n", kata);
+        }
+	fclose(in);
+	getchar();
 }
 
