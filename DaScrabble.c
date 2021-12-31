@@ -529,7 +529,7 @@ void bukaKamus()
         while(!feof(in)){
            fscanf(in,"%[^\n]\n", &nama);fflush(stdin);
            // %[^\n] artinya kita menyimpan bagian dari string dalam file \n atau newline
-		   if(strlen(nama) > 7){
+		   if(strlen(nama) > 10){
 		   	continue;
 		   }
 		   else{
