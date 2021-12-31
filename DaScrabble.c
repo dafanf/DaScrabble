@@ -524,13 +524,17 @@ void insertKePapan(char *temp, int baris, int kolom, int arah){
 
 void bukaKamus()
 {
-    char kata[100];
+    char nama[100];
 	FILE *in=fopen("words2.txt","r");
         while(!feof(in)){
-           fscanf(in,"%[^\n]\n", &kata);fflush(stdin);   
-           // %[^#] artinya kita menyimpan bagian dari string dalam file sampai tanda #. 
-           // Kita tidak menggunnakan %s karena nama mengandung spasi
-           printf("%s %d\n", kata);
+           fscanf(in,"%[^\n]\n", &nama);fflush(stdin);
+           // %[^\n] artinya kita menyimpan bagian dari string dalam file \n atau newline
+		   if(strlen(nama) > 7){
+		   	continue;
+		   }
+		   else{
+		   	printf("%s\n", nama);
+		   }
         }
 	fclose(in);
 	getchar();
