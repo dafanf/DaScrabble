@@ -21,6 +21,11 @@ void inisialisasiPapan();
 void printPapan();
 int getPosisi(int *baris, int *kolom);
 int getArah(int *arah);
+int getKata(char *kata, int baris, int kolom, int arah);
+
+//Deklarasi Modul validasi posisi kata pada papan
+int cekPosisiKata(char *kata, int baris, int kolom, int arah);
+void insertKePapan(char *temp, int baris, int kolom, int arah);
 
 typedef struct {
 	char huruf;
@@ -82,24 +87,25 @@ int main(){
 }
 
 void mulaiPermainan(){
-	int level;
+	int level; 
 	int pilihMain;
-	int result;
-	int baris, kolom, arah;
-	int giliran = -1;
-	int jumPass = 0;
-	bool isMenyerah = false;
-	bool isHabis = false;
+	int result; // untuk parameter kondisi perulangan ketika input jawaban tidak valid
+	int baris, kolom, arah; //baris kolom untuk input jawaban, arah untuk jawaban horizontal atau vertikal
+	char kata[8];
+	int giliran = -1; //-1 agar index dari 0
+	int jumPass = 0; //counter berapa kali pemain memilih Pass
+	bool isMenyerah = false; 
+	bool isHabis = false; //kondisi jika huruf persediaan dan huruf pemain habis
 	
 	system("cls");
 	level = registPemain();
 	
 	system("cls");
-	inisialisasiPapan();
+	inisialisasiPapan(); //pengisian nilai awal papan
 	
 	do{
-		giliran = (giliran + 1) % 2;
-		system("cls");
+		giliran = (giliran + 1) % 2; //pergantian giliran pemain 0 dan 1
+		//system("cls");
 		switch(level){
 			case 1 : printf("\n  Level : Easy");
 				break;
@@ -112,7 +118,7 @@ void mulaiPermainan(){
 		printf("\n  %s vs. %s", Pemain[0].nama_pemain, Pemain[1].nama_pemain);
 		printf("\n  Skor %s : %d \t\t Skor %s : %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
 		
-		printPapan();
+		printPapan(); //menampilkan papan dan isinya
 		
 		printf("\n\n  Giliran: %s \t  Waktu: 01:23\t  Sisa Huruf: 84", Pemain[giliran].nama_pemain);
 		printf("\n\n\t\tA B C D E F G H I");
@@ -141,12 +147,27 @@ void mulaiPermainan(){
 			if(result == -1){
 				goto restart;
 			}
+			
+			// input kata
+			inputkata:
+			do{
+				result = getKata(kata, baris, kolom, arah);
+			}while(result == 0);
+			if(result == -1){
+				goto restart;
+			}
+			
+			result = cekPosisiKata(kata, baris, kolom, arah);
+			if(result == 0){
+				goto inputkata;
+			}
+			
 		}
 		
 		printf("\n  baris : %d",baris);
 		printf("\n  kolom : %d",kolom);
 		printf("\n  arah : %d",arah);
-		//printf("\n  baris : %s",kata);
+		printf("\n  kata : %s\n",kata);
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	
 }
@@ -267,7 +288,7 @@ void inisialisasiPapan(){
             Papan[i][j].isiHuruf = ' ';
             if ((i==0 || i==7 || i==14) && (j==0 || j==7 || j==14)){
             	if(i==7 && j==7){
-            		Papan[i][j].isiHuruf= '*';
+            		Papan[i][j].isiHuruf= ' ';
 				}
 				else{
 					Papan[i][j].isWord3= true;
@@ -398,4 +419,103 @@ int getArah(int *arah){
 	return 0;
 }
 
+int getKata(char *kata, int baris, int kolom, int arah){
+	int length;
+	int i=0;
+	fflush(stdin);
+	printf("\n  Masukkan kata sesuai huruf yang diberikan, atau (.) untuk mengulang : ");
+	scanf("%s", kata);
+	
+	
+	if(kata[0] == '.'){
+		return -1;
+	}
+	length = strlen(kata);
+	strupr(kata);
+	while(i<length){
+		if(kata[i] < 'A' || kata[i] > 'Z'){
+			printf("\n  Kata tidak Valid, coba lagi, pastikan memasukkan huruf yang benar.");
+			return 0;
+		}
+		
+		i++;
+	}
+	
+	if((length + ((arah) ? baris : kolom)) > 15){
+		printf("Posisi kata terlalu panjang, coba lagi.");
+		return 0;
+	}
+	
+	return 1;
+}
+
+int cekPosisiKata(char *kata, int baris, int kolom, int arah){
+	char temp[15];
+	int i = baris;
+	int j = kolom;
+	int valid = 0;
+	int k = 0;
+	int c = 0;
+	bool status = true;
+	int length, l;
+	
+	while(k < 15 && status){
+		if(i == 7 && j == 7){
+			valid = 1;
+		}
+		
+		if(Papan[i][j].isiHuruf != ' '){
+			temp[k] = Papan[i][j].isiHuruf;
+			valid = 1;
+		}
+		else if(kata[c] != '\0'){
+			temp[k] = kata[c];
+			c++;
+		}
+		
+		if(arah == 0){
+			j++;
+		}
+		else{
+			i++;
+		}
+		
+		k++;
+	}
+	
+	if(valid == 0){
+		printf("  Posisi tidak tepat, coba lagi.");
+		return 0;
+	}
+	length = strlen(temp);
+	if((length + ((arah) ? baris : kolom)) > 15){
+		printf("  Posisi kata terlalu panjang, coba lagi.");
+		return 0;
+	}
+	
+	insertKePapan(temp, baris, kolom, arah);
+	
+	return 1;
+}
+
+void insertKePapan(char *temp, int baris, int kolom, int arah){
+	int length, k;
+	int i = baris;
+	int j = kolom;
+	
+	length = strlen(temp);
+	
+	for(k=0; k<length; k++){
+		Papan[i][j].isiHuruf = temp[k];
+		
+		if(arah == 0){
+			j++;
+		}
+		else{
+			i++;
+		}
+	}
+	
+	printf("\n %s", temp);
+}
 
