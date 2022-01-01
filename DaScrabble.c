@@ -493,7 +493,7 @@ int getKata(char *kata, int baris, int kolom, int arah){
 }
 
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
-	char temp[15];
+	char temp[15] = " ";
 	int i = baris;
 	int j = kolom;
 	int valid;
@@ -566,17 +566,9 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 		k++;
 	}
 	
-	if(arah == 0){
-		if(Papan[i][j].isiHuruf != ' '){
-			temp[k] = Papan[i][j].isiHuruf;
-			valid = 1;
-		}
-	}
-	else{
-		if(Papan[i][j].isiHuruf != ' '){
-			temp[k] = Papan[i][j].isiHuruf;
-			valid = 1;
-		}
+	if(Papan[i][j].isiHuruf != ' '){
+		temp[k] = Papan[i][j].isiHuruf;
+		valid = 1;
 	}
 	
 	if(valid == 0){
@@ -750,6 +742,7 @@ void showPoin(int giliran){
 		}
 	}
 }
+
 
 void showHuruf(int giliran){
 	int i, length;
