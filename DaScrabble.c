@@ -20,6 +20,11 @@ int  pilihLevel();
 //Deklarasi Modul Inisialisasi Permainan
 void inisialisasiPapan();
 void inisialisasiHuruf();
+int hitungSisa();
+void randomHuruf(int sisa, int giliran, int kurang);
+void showHuruf(int giliran);
+void showPoin(int giliran);
+void kurangiHuruf(char *string);
 
 //Deklarasi Modul saat permainan
 void printPapan();
@@ -97,6 +102,7 @@ int main(){
 }
 
 void mulaiPermainan(){
+	int i, kurang;
 	int level; 
 	int pilihMain;
 	int result; // untuk parameter kondisi perulangan ketika input jawaban tidak valid
@@ -131,9 +137,15 @@ void mulaiPermainan(){
 		
 		printPapan(); //menampilkan papan dan isinya
 		
-		printf("\n\n  Giliran: %s \t  Waktu: 01:23\t  Sisa Huruf: 84", Pemain[giliran].nama_pemain);
-		printf("\n\n\t\tA B C D E F G H I");
-		printf("\n\n\t\t1 2 3 4 5 6 7 8 9");
+		kurang = 7;
+		randomHuruf(hitungSisa(), giliran, kurang);
+		
+		printf("\n\n  Giliran: %s \t  Waktu: 01:23\t  Sisa Huruf: %d", Pemain[giliran].nama_pemain, hitungSisa());
+		
+		printf("\n\n\t\t");
+		showHuruf(giliran);
+		printf("\n\n\t\t");
+		showPoin(giliran);
 		
 		restart:
 		printf("\n\n  1. Jawab");
@@ -612,8 +624,7 @@ void insertKePapan(char *temp, int baris, int kolom, int arah){
 	printf("\n  %s", temp);
 }
 
-int cekKamus(char *kata)
-{
+int cekKamus(char *kata){
     char nama[100];
     kata = strlwr(kata);
 	FILE *in=fopen("words2.txt","r");
@@ -689,5 +700,77 @@ void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran){
 	
 	printf("\n  Score yang didapat +%d", score);
 	
+}
+
+int hitungSisa(){
+	int i;
+	int sisa=0;
+	
+	for(i=0; i<27; i++){
+    	sisa += Huruf[i].jumlah;
+	}
+	
+	return sisa;
+}
+
+void randomHuruf(int sisa, int giliran, int kurang){
+	int i, j, k=0;
+	int length;
+    char string[]={[7]='\0'};
+    char huruf[100];
+    
+    for (i=0; i<27; i++){
+    	j=0;
+    	while(j<Huruf[i].jumlah && k<sisa){
+    		huruf[k] = Huruf[i].huruf;
+    		j++;
+    		k++;
+		}
+	}
+    srand(time(0));
+        for(i=0;i<7;i++){
+        string[i]=huruf[rand() % sisa];
+    }
+    
+    for(i=0; i<7; i++){
+    	Pemain[giliran].huruf[i] = string[i];	
+	}
+	
+	kurangiHuruf(string);
+}
+
+void showPoin(int giliran){
+	int i, j;
+	
+	for(i=0; i<7; i++){
+		for(j=0; j<27; j++){
+			if(Pemain[giliran].huruf[i] == Huruf[j].huruf){
+				printf("%d ", Huruf[j].nilaiHuruf);
+			}
+		}
+	}
+}
+
+void showHuruf(int giliran){
+	int i, length;
+	
+	length = strlen(Pemain[giliran].huruf);
+	for(i=0; i<length; i++){
+		printf("%c ", Pemain[giliran].huruf[i]);
+	}
+}
+
+void kurangiHuruf(char *string){
+	int i, j;
+	int length;
+	
+	length = strlen(string);
+	for(i=0; i<length; i++){
+		for(j=0; j<27; j++){
+			if(string[i] == Huruf[j].huruf){
+				Huruf[j].jumlah -= 1;
+			}
+		}
+	}
 }
 
