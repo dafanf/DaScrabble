@@ -16,8 +16,11 @@ int  pilihPemain();
 void inputNama(int pilihan);
 int  pilihLevel();
 
-//Deklarasi Modul saat permainan
+//Deklarasi Modul Inisialisasi Permainan
 void inisialisasiPapan();
+void inisialisasiHuruf();
+
+//Deklarasi Modul saat permainan
 void printPapan();
 int getPosisi(int *baris, int *kolom);
 int getArah(int *arah);
@@ -29,6 +32,7 @@ void insertKePapan(char *temp, int baris, int kolom, int arah);
 
 //Deklarasi Modul yang berhubungan dengan File
 int cekKamus(char *kata);
+
 
 typedef struct {
 	char huruf;
@@ -53,6 +57,7 @@ typedef struct{
 
 //Kamus Data Global
 IsiPapan Papan[15][15];
+DataHuruf Huruf[27];
 DataPemain Pemain[2];
 
 int main(){
@@ -104,6 +109,7 @@ void mulaiPermainan(){
 	level = registPemain();
 	
 	system("cls");
+	inisialisasiHuruf(); //pengisian nilai huruf yang tersedia, huruf, poin, serta jumlahnya
 	inisialisasiPapan(); //pengisian nilai awal papan
 	
 	do{
@@ -277,6 +283,26 @@ int  pilihLevel(){
 	} while(pilih < 1 || pilih > 3);
 	
 	return level;
+}
+
+void inisialisasiHuruf(){
+	char huruf;
+	int nilaiHuruf;
+	int jumlah;
+	int i = 0;
+	
+	FILE *in = fopen("datahuruf.txt", "r");
+		while(!feof(in)){
+			fscanf(in,"%c#%d#%d\n", &huruf, &nilaiHuruf, &jumlah);
+			fflush(stdin);
+			
+			Huruf[i].huruf = huruf;
+			Huruf[i].nilaiHuruf = nilaiHuruf;
+			Huruf[i].jumlah = jumlah;
+			
+			i++;
+		};
+	fclose(in);
 }
 
 void inisialisasiPapan(){
