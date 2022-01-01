@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdbool.h>
+#include<ctype.h>
 
 //Deklarasi Modul Menu
 void mulaiPermainan();
@@ -25,9 +26,10 @@ void printPapan();
 int getPosisi(int *baris, int *kolom);
 int getArah(int *arah);
 int getKata(char *kata, int baris, int kolom, int arah);
+void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
 
 //Deklarasi Modul validasi posisi kata pada papan
-int cekPosisiKata(char *kata, int baris, int kolom, int arah);
+int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran);
 void insertKePapan(char *temp, int baris, int kolom, int arah);
 
 //Deklarasi Modul yang berhubungan dengan File
@@ -166,7 +168,7 @@ void mulaiPermainan(){
 				goto restart;
 			}
 			
-			result = cekPosisiKata(kata, baris, kolom, arah);
+			result = cekPosisiKata(kata, baris, kolom, arah, giliran);
 			if(result == 0){
 				goto inputkata;
 			}
@@ -478,28 +480,68 @@ int getKata(char *kata, int baris, int kolom, int arah){
 	return 1;
 }
 
-int cekPosisiKata(char *kata, int baris, int kolom, int arah){
+int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 	char temp[15];
 	int i = baris;
 	int j = kolom;
-	int valid = 0;
+	int valid;
 	int k = 0;
 	int c = 0;
 	bool status = true;
 	int length, l;
+	bool ada = true;
 	
-	while(k < 15 && status){
-		if(i == 7 && j == 7){
-			valid = 1;
+	while(ada){
+		if(arah==0){
+			if(Papan[i][j-1].isiHuruf != ' '){
+				j = j-1;
+			}
+			else{
+				ada = false;
+			}
 		}
-		
-		if(Papan[i][j].isiHuruf != ' '){
-			temp[k] = Papan[i][j].isiHuruf;
-			valid = 1;
+		else if(arah==1){
+			if(Papan[i-1][j].isiHuruf != ' '){
+				i = i-1;
+			}
+			else{
+				ada = false;
+			}
 		}
-		else if(kata[c] != '\0'){
-			temp[k] = kata[c];
-			c++;
+	}
+	
+	baris = i;
+	kolom = j;
+	valid = 0;
+	l = strlen(kata);
+	while(status && c<l){
+		if(Papan[7][7].isiHuruf == ' '){
+			if(i == 7 && j == 7){
+				valid = 1;
+			}
+			if(Papan[i][j].isiHuruf != ' '){
+				temp[k] = Papan[i][j].isiHuruf;
+			}
+			else if(kata[c] >= 'A' || kata[c] <= 'Z'){
+				temp[k] = kata[c];
+				c++;
+			}
+			else{
+				status = false;
+			}
+		}
+		else{
+			if(Papan[i][j].isiHuruf != ' '){
+				temp[k] = Papan[i][j].isiHuruf;
+				valid = 1;
+			}
+			else if(kata[c] >= 'A' || kata[c] <= 'Z'){
+				temp[k] = kata[c];
+				c++;
+			}
+			else{
+				status = false;
+			}
 		}
 		
 		if(arah == 0){
@@ -512,21 +554,37 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah){
 		k++;
 	}
 	
+	if(arah == 0){
+		if(Papan[i][j].isiHuruf != ' '){
+			temp[k] = Papan[i][j].isiHuruf;
+			valid = 1;
+		}
+	}
+	else{
+		if(Papan[i][j].isiHuruf != ' '){
+			temp[k] = Papan[i][j].isiHuruf;
+			valid = 1;
+		}
+	}
+	
 	if(valid == 0){
 		printf("  Posisi tidak tepat, coba lagi.");
 		return 0;
 	}
+	else{
+		if(cekKamus(temp)){
+		hitungScore(temp, baris, kolom, arah, giliran);
+			insertKePapan(temp, baris, kolom, arah);	
+		}
+		else{
+			printf("  Kata tidak valid, coba lagi,");
+			printf("  %s", temp);
+			return 0;
+		}
+	}
 	length = strlen(temp);
 	if((length + ((arah) ? baris : kolom)) > 15){
 		printf("  Posisi kata terlalu panjang, coba lagi.");
-		return 0;
-	}
-	
-	if(cekKamus(temp)){
-		insertKePapan(temp, baris, kolom, arah);	
-	}
-	else{
-		printf("  Kata tidak valid, coba lagi,");
 		return 0;
 	}
 	
@@ -551,7 +609,7 @@ void insertKePapan(char *temp, int baris, int kolom, int arah){
 		}
 	}
 	
-	printf("\n %s", temp);
+	printf("\n  %s", temp);
 }
 
 int cekKamus(char *kata)
@@ -570,5 +628,66 @@ int cekKamus(char *kata)
 	fclose(in);
 	
 	return 0;
+}
+
+void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran){
+	int score = 0;
+	int multiplier = 0;
+	int i, j;
+	int length;
+	int r = baris;
+	int c = kolom;
+	bool status;
+	
+	length = strlen(jawaban);
+	
+	for(i=0; i<length; i++){
+		j = 0;
+		status = false;
+		while(j<27 && status == false){
+			if(jawaban[i] == tolower(Huruf[j].huruf)){
+				if(Papan[r][c].isLetter2){
+					score = score + (Huruf[j].nilaiHuruf*2);
+					Papan[r][c].isLetter2 = false;
+				}
+				else if(Papan[r][c].isLetter3){
+					score = score + (Huruf[j].nilaiHuruf*3);
+					Papan[r][c].isLetter3 = false;
+				}
+				else if(Papan[r][c].isWord2){
+					multiplier = multiplier + 2;
+					Papan[r][c].isWord2 = false;
+				}
+				else if(Papan[r][c].isWord3){
+					multiplier = multiplier + 3;
+					Papan[r][c].isWord3 = false;
+				}
+				else {
+					score = score + Huruf[j].nilaiHuruf;
+				}
+				status = true;
+			}
+			j++;
+		}
+		if(arah == 0){
+			c++;
+		}
+		else{
+			r++;
+		}
+	}
+	
+	if(multiplier > 0){
+		score = score * multiplier;
+	}
+	
+	if(Pemain[0].score == 0 && Pemain[1].score == 0){
+		score = score * 2;
+	}
+	
+	Pemain[giliran].score = score;
+	
+	printf("\n  Score yang didapat +%d", score);
+	
 }
 
