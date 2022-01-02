@@ -31,6 +31,7 @@ int getPosisi(int *baris, int *kolom);
 int getArah(int *arah);
 int getKata(char *kata, int baris, int kolom, int arah);
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
+int cekHuruf(char *kata, int giliran);
 
 //Deklarasi Modul validasi posisi kata pada papan
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran);
@@ -108,7 +109,7 @@ void tampilMenu(){
 				break;
 			default : printf("Menu tidak tersedia.");
 		}
-	} while(pilihMenu < 1 || pilihMenu > 5);
+	} while(pilihMenu < 1 || pilihMenu > 5 );
 }
 
 void readHighscores(){
@@ -540,6 +541,37 @@ int getKata(char *kata, int baris, int kolom, int arah){
 	return 1;
 }
 
+int cekHuruf(char *kata, int giliran){
+	int i, j;
+	int c = 0;
+	int length, panjang;
+	bool beda;
+	
+	length = strlen(kata);
+	panjang = strlen(Pemain[giliran].huruf);
+	
+	for(i=0; i<length; i++){
+		beda = true;
+		j = 0;
+		while(beda && j<panjang){
+			if(kata[i] == Pemain[giliran].huruf[j]){
+				beda = false;
+			}
+			j++;
+		}
+		
+		if(beda){
+			c++;
+		}
+	}
+	
+	if(c > 0){
+		return 0;
+	}
+	
+	return 1;
+}
+
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 	char temp[15] = " ";
 	int i = baris;
@@ -624,16 +656,24 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 		return 0;
 	}
 	else{
-		if(cekKamus(temp)){
-		hitungScore(temp, baris, kolom, arah, giliran);
-			insertKePapan(temp, baris, kolom, arah);	
+		if(cekHuruf(kata, giliran)){
+			if(cekKamus(temp)){
+			hitungScore(temp, baris, kolom, arah, giliran);
+				insertKePapan(temp, baris, kolom, arah);	
+			}
+			else{
+				printf("  Kata tidak valid, coba lagi,");
+				printf("  %s", temp);
+				return 0;
+			}
 		}
 		else{
-			printf("  Kata tidak valid, coba lagi,");
-			printf("  %s", temp);
+			printf("Masukkan huruf yang sesuai");
 			return 0;
 		}
+		
 	}
+	
 	length = strlen(temp);
 	if((length + ((arah) ? baris : kolom)) > 15){
 		printf("  Posisi kata terlalu panjang, coba lagi.");
@@ -790,7 +830,6 @@ void showPoin(int giliran){
 		}
 	}
 }
-
 
 void showHuruf(int giliran){
 	int i, length;
