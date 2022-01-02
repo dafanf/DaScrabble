@@ -271,6 +271,8 @@ int registPemain(){
 	pilihanPemain = pilihPemain();
 	inputNama(pilihanPemain);
 	pilihanLevel = pilihLevel();
+	Pemain[0].score = 0;
+	Pemain[1].score = 0;
 	
 	return pilihanLevel;
 }
@@ -554,7 +556,7 @@ int cekHuruf(char *kata, int giliran){
 		beda = true;
 		j = 0;
 		while(beda && j<panjang){
-			if(kata[i] == Pemain[giliran].huruf[j]){
+			if(kata[i] == Pemain[giliran].huruf[j] || Pemain[giliran].huruf[j] == '_'){
 				beda = false;
 			}
 			j++;
@@ -776,7 +778,7 @@ void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran){
 		score = score * 2;
 	}
 	
-	Pemain[giliran].score = score;
+	Pemain[giliran].score += score;
 	
 	printf("\n  Score yang didapat +%d", score);
 	
