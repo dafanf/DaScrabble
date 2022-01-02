@@ -5,6 +5,7 @@
 #include<ctype.h>
 
 //Deklarasi Modul Menu
+void tampilMenu();
 void mulaiPermainan();
 void tampilLeaderboard();
 void tampilHTP();
@@ -75,11 +76,17 @@ DataHuruf Huruf[27];
 DataPemain Pemain[2];
 
 int main(){
-	//Kamus Data
+	tampilMenu();
+	
+	return 0;
+}
+
+void tampilMenu(){
 	int pilihMenu;
 	
 	//Program
 	do{
+		main:
 		system("cls");
 		printf("DaScrabble\n\n");
 		printf("1. Main\n");
@@ -104,8 +111,6 @@ int main(){
 			default : printf("Menu tidak tersedia.");
 		}
 	} while(pilihMenu < 1 || pilihMenu > 5);
-	
-	return 0;
 }
 
 void mulaiPermainan(){
@@ -819,12 +824,16 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 void readHTPFile(){
     char rules[255];
 	FILE *in=fopen("htp.txt","r");//perintah untuk membuka file dengan mode r / read
-        while(!feof(in)){
-           fscanf(in,"%[^\n]\n", &rules);fflush(stdin);   
-           // %[^\n] artinya kita menyimpan bagian dari string dalam file sampai tanda \n atau newline. 
-           // Kita tidak menggunnakan %s karena aturan mengandung spasi
-           printf("%s\n", rules);
-        }
+	system("cls");
+	printf("\n");
+    while(!feof(in)){
+        fscanf(in,"%[^\n]\n", &rules);fflush(stdin);   
+        // %[^\n] artinya kita menyimpan bagian dari string dalam file sampai tanda \n atau newline. 
+        // Kita tidak menggunnakan %s karena aturan mengandung spasi
+        printf("%s\n", rules);
+    }
 	fclose(in);//perintah untuk menutup file yang tadi dibuka
+	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
 	getchar();
+	tampilMenu();
 }
