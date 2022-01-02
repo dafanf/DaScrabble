@@ -95,7 +95,7 @@ int main(){
 				break;
 			case 2 : tampilLeaderboard(); 
 				break;
-			case 3 : tampilHTP(); 
+			case 3 : readHTPFile(); 
 				break;
 			case 4 : tampilTentang(); 
 				break;
