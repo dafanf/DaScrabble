@@ -1,0 +1,8 @@
+Cara Bermain
+1. Pilih menu play pada tampilan menu pertama
+2. Isi semua data yang diperlukan serta aturan seperti apa yang diinginkan
+3. Terdapat 3 pilihan saat bermain yaitu Jawab, Pass dan Menyerah
+4. Menu jawab berfungsi untuk mengisi jawaban anda keatas papan
+5. Menu pass berfungsi untuk melewat giliran
+6. Dan Menu menyerah untuk menyerah dan lawan anda akan otomatis menang
+7. Selamat Bermain!!!! 
