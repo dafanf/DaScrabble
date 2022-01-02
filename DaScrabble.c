@@ -41,6 +41,7 @@ void insertKePapan(char *temp, int baris, int kolom, int arah);
 int cekKamus(char *kata);
 void readHighscores();
 void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]);
+void readHTPFile();
 
 typedef struct {
 	char huruf;
@@ -812,5 +813,18 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 		}
 	}
 	fclose(out);
+	getchar();
+}
+
+void readHTPFile(){
+    char rules[255];
+	FILE *in=fopen("htp.txt","r");//perintah untuk membuka file dengan mode r / read
+        while(!feof(in)){
+           fscanf(in,"%[^\n]\n", &rules);fflush(stdin);   
+           // %[^\n] artinya kita menyimpan bagian dari string dalam file sampai tanda \n atau newline. 
+           // Kita tidak menggunnakan %s karena aturan mengandung spasi
+           printf("%s\n", rules);
+        }
+	fclose(in);//perintah untuk menutup file yang tadi dibuka
 	getchar();
 }
