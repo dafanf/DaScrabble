@@ -39,7 +39,8 @@ void insertKePapan(char *temp, int baris, int kolom, int arah);
 
 //Deklarasi Modul yang berhubungan dengan File
 int cekKamus(char *kata);
-
+void readHighscores();
+void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]);
 
 typedef struct {
 	char huruf;
@@ -62,6 +63,11 @@ typedef struct{
    bool iskomputer;
 }DataPemain;
 
+typedef struct{
+	char nama[100];
+	int score;
+	char level[10];
+}highScore;
 //Kamus Data Global
 IsiPapan Papan[15][15];
 DataHuruf Huruf[27];
@@ -766,4 +772,45 @@ void kurangiHuruf(char *string){
 		}
 	}
 }
+void readHighscores(){
+    char nama[100];
+    int umur;
+    char level[10];
+	FILE *in=fopen("updatedHighscore.txt","r");//perintah untuk membuka file dengan mode r / read
+        while(!feof(in)){
+           fscanf(in,"%[^#]#%d#%[^\n]\n", &nama, &umur, &level);fflush(stdin);   
+           // %[^#] artinya kita menyimpan bagian dari string dalam file sampai tanda #. 
+           // Kita tidak menggunnakan %s karena nama mengandung spasi
+           printf("%s\t%d\t%s\n", nama, umur, level);
+        }
+	fclose(in);//perintah untuk menutup file yang tadi dibuka
+	getchar(); 
+}
 
+void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
+	highScore testHighscore[6];
+    bool isMengisi = false;
+    int i = 0;
+	FILE *in=fopen("updatedHighscore.txt","r+");//perintah untuk membuka file dengan mode r / read
+    while(!feof(in)){
+        fscanf(in,"%[^#]#%d#%[^\n]\n", &testHighscore[i].nama, &testHighscore[i].score, &testHighscore[i].level);fflush(stdin);
+        i++;
+    }
+	printf("Sebelum diedit\n");    
+    for(i = 0; i < 6;i++){
+        printf("%s\t%d\t%s\n", testHighscore[i].nama, testHighscore[i].score, testHighscore[i].level);
+	}
+	fclose(in);//perintah untuk menutup file yang tadi dibuka
+	FILE *out=fopen("updatedHighscore.txt","w");
+	for(i = 0; i < 6;i++){
+        if(scoreBaru >= testHighscore[i].score && isMengisi==false){
+        	fprintf(out,"%s#%d#%s\n", namaBaru, scoreBaru, levelBaru);
+        	isMengisi = true;
+		}
+		else{
+			fprintf(out,"%s#%d#%s\n", testHighscore[i].nama, testHighscore[i].score, testHighscore[i].level);
+		}
+	}
+	fclose(out);
+	getchar();
+}
