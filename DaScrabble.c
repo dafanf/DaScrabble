@@ -919,10 +919,6 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
         fscanf(in,"%[^#]#%d#%[^\n]\n", &testHighscore[i].nama, &testHighscore[i].score, &testHighscore[i].level);fflush(stdin);
         i++;
     }
-	printf("Sebelum diedit\n");    
-    for(i = 0; i < 6;i++){
-        printf("%s\t%d\t%s\n", testHighscore[i].nama, testHighscore[i].score, testHighscore[i].level);
-	}
 	fclose(in);//perintah untuk menutup file yang tadi dibuka
 	FILE *out=fopen("updatedHighscore.txt","w");
 	for(i = 0; i < 6;i++){
