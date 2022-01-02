@@ -7,8 +7,6 @@
 //Deklarasi Modul Menu
 void tampilMenu();
 void mulaiPermainan();
-void tampilLeaderboard();
-void tampilHTP();
 void tampilTentang();
 void endProgram();
 
@@ -100,7 +98,7 @@ void tampilMenu(){
 		switch(pilihMenu){
 			case 1 : mulaiPermainan(); 
 				break;
-			case 2 : tampilLeaderboard(); 
+			case 2 : readHighscores(); 
 				break;
 			case 3 : readHTPFile(); 
 				break;
@@ -111,6 +109,64 @@ void tampilMenu(){
 			default : printf("Menu tidak tersedia.");
 		}
 	} while(pilihMenu < 1 || pilihMenu > 5);
+}
+
+void readHighscores(){
+    char nama[100];
+    int umur;
+    char level[10];
+	FILE *in=fopen("updatedHighscore.txt","r");//perintah untuk membuka file dengan mode r / read
+        system("cls");
+		printf("\n");
+		while(!feof(in)){
+           fscanf(in,"%[^#]#%d#%[^\n]\n", &nama, &umur, &level);fflush(stdin);   
+           // %[^#] artinya kita menyimpan bagian dari string dalam file sampai tanda #. 
+           // Kita tidak menggunnakan %s karena nama mengandung spasi
+           printf("%s\t%d\t%s\n", nama, umur, level);
+        }
+	fclose(in);//perintah untuk menutup file yang tadi dibuka
+	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
+	getchar(); 
+	tampilMenu();
+}
+
+void readHTPFile(){
+    char rules[255];
+	FILE *in=fopen("htp.txt","r");//perintah untuk membuka file dengan mode r / read
+	system("cls");
+	printf("\n");
+    while(!feof(in)){
+        fscanf(in,"%[^\n]\n", &rules);fflush(stdin);   
+        // %[^\n] artinya kita menyimpan bagian dari string dalam file sampai tanda \n atau newline. 
+        // Kita tidak menggunnakan %s karena aturan mengandung spasi
+        printf("%s\n", rules);
+    }
+	fclose(in);//perintah untuk menutup file yang tadi dibuka
+	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
+	getchar();
+	tampilMenu();
+}
+
+void tampilTentang(){
+	char rules[255];
+	FILE *in=fopen("tentang.txt","r");//perintah untuk membuka file dengan mode r / read
+	system("cls");
+	printf("\n");
+    while(!feof(in)){
+        fscanf(in,"%[^\n]\n", &rules);fflush(stdin);   
+        // %[^\n] artinya kita menyimpan bagian dari string dalam file sampai tanda \n atau newline. 
+        // Kita tidak menggunnakan %s karena aturan mengandung spasi
+        printf("%s\n", rules);
+    }
+	fclose(in);//perintah untuk menutup file yang tadi dibuka
+	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
+	getchar();
+	tampilMenu();
+}
+
+void endProgram(){
+	system("cls");
+	printf("Terima kasih sudah bermain DaScrabble");
 }
 
 void mulaiPermainan(){
@@ -205,26 +261,6 @@ void mulaiPermainan(){
 		printf("\n  kata : %s\n",kata);
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	
-}
-
-void tampilLeaderboard(){
-	system("cls");
-	printf("Leaderboard");
-}
-
-void tampilHTP(){
-	system("cls");
-	printf("Cara Bermain");
-}
-
-void tampilTentang(){
-	system("cls");
-	printf("Tentang Aplikasi");
-}
-
-void endProgram(){
-	system("cls");
-	printf("Terima kasih sudah bermain DaScrabble");
 }
 
 int registPemain(){
@@ -778,20 +814,6 @@ void kurangiHuruf(char *string){
 		}
 	}
 }
-void readHighscores(){
-    char nama[100];
-    int umur;
-    char level[10];
-	FILE *in=fopen("updatedHighscore.txt","r");//perintah untuk membuka file dengan mode r / read
-        while(!feof(in)){
-           fscanf(in,"%[^#]#%d#%[^\n]\n", &nama, &umur, &level);fflush(stdin);   
-           // %[^#] artinya kita menyimpan bagian dari string dalam file sampai tanda #. 
-           // Kita tidak menggunnakan %s karena nama mengandung spasi
-           printf("%s\t%d\t%s\n", nama, umur, level);
-        }
-	fclose(in);//perintah untuk menutup file yang tadi dibuka
-	getchar(); 
-}
 
 void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 	highScore testHighscore[6];
@@ -821,19 +843,4 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 	getchar();
 }
 
-void readHTPFile(){
-    char rules[255];
-	FILE *in=fopen("htp.txt","r");//perintah untuk membuka file dengan mode r / read
-	system("cls");
-	printf("\n");
-    while(!feof(in)){
-        fscanf(in,"%[^\n]\n", &rules);fflush(stdin);   
-        // %[^\n] artinya kita menyimpan bagian dari string dalam file sampai tanda \n atau newline. 
-        // Kita tidak menggunnakan %s karena aturan mengandung spasi
-        printf("%s\n", rules);
-    }
-	fclose(in);//perintah untuk menutup file yang tadi dibuka
-	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
-	getchar();
-	tampilMenu();
-}
+

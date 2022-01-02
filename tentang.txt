@@ -1,0 +1,9 @@
+Tentang DaScrabble
+
+DaScrabble merupakan komputasi dari permainan Scrabble dengan bahasa C
+dibuat untuk memenuhi tugas akhir semester 1 mata kuliah Dasar-Dasar Pemrograman.
+
+Dibuat Oleh:
+Dafa Nurul Fauziansyah   (211524006)
+Salsabila Maharani Putri (211524026)
+1A-D4 2021
