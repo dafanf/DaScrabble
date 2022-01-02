@@ -32,6 +32,7 @@ int getArah(int *arah);
 int getKata(char *kata, int baris, int kolom, int arah);
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
 int cekHuruf(char *kata, int giliran);
+void susunHuruf(char *kata, int giliran); //untuk mengurangi huruf yang dimiliki pemain yang telah disubmit ke papan
 
 //Deklarasi Modul validasi posisi kata pada papan
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran);
@@ -181,6 +182,7 @@ void mulaiPermainan(){
 	int jumPass = 0; //counter berapa kali pemain memilih Pass
 	bool isMenyerah = false; 
 	bool isHabis = false; //kondisi jika huruf persediaan dan huruf pemain habis
+	int panjang;
 	
 	system("cls");
 	level = registPemain();
@@ -206,9 +208,11 @@ void mulaiPermainan(){
 		
 		printPapan(); //menampilkan papan dan isinya
 		
-		kurang = 7;
-		randomHuruf(hitungSisa(), giliran, kurang);
 		
+		panjang = strlen(Pemain[giliran].huruf);
+		kurang = 7 - panjang;
+		
+		randomHuruf(hitungSisa(), giliran, kurang);
 		printf("\n\n  Giliran: %s \t  Waktu: 01:23\t  Sisa Huruf: %d", Pemain[giliran].nama_pemain, hitungSisa());
 		
 		printf("\n\n\t\t");
@@ -660,8 +664,9 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 	else{
 		if(cekHuruf(kata, giliran)){
 			if(cekKamus(temp)){
-			hitungScore(temp, baris, kolom, arah, giliran);
-				insertKePapan(temp, baris, kolom, arah);	
+				hitungScore(temp, baris, kolom, arah, giliran);
+				insertKePapan(temp, baris, kolom, arah);
+				susunHuruf(kata, giliran);
 			}
 			else{
 				printf("  Kata tidak valid, coba lagi,");
@@ -683,6 +688,51 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 	}
 	
 	return 1;
+}
+
+void susunHuruf(char *kata, int giliran){
+	char tempHuruf[7] = " ";
+	int length, panjang;
+	int counter1, counter2, counter3;
+	bool status;
+	int i;
+	
+	status = false;
+	counter1 = 0;
+	counter3 = 0;
+	
+	length = strlen(Pemain[giliran].huruf);
+	panjang = strlen(kata);
+	
+	if(length != 0){
+		while(counter1 < length){
+			counter2 = 0;
+			do{
+				if(Pemain[giliran].huruf[counter1] != kata[counter2]){
+					status = false;
+				}
+				else{
+					status = true;
+					kata[counter2] = '\0';
+				}
+				counter2++;
+			}while(status == false && counter2 < panjang);
+			
+			if(status == false){
+				tempHuruf[counter3] = Pemain[giliran].huruf[counter1];
+				counter3++;
+			}
+			counter1++;
+		}
+	}
+	
+	for(i=0; i<7; i++){
+		Pemain[giliran].huruf[i] = '\0';
+	}
+	length = strlen(tempHuruf);
+	for(i=0; i<length; i++){
+		Pemain[giliran].huruf[i] = tempHuruf[i];
+	}
 }
 
 void insertKePapan(char *temp, int baris, int kolom, int arah){
@@ -810,12 +860,16 @@ void randomHuruf(int sisa, int giliran, int kurang){
 		}
 	}
     srand(time(0));
-        for(i=0;i<7;i++){
+        for(i=0;i<kurang;i++){
         string[i]=huruf[rand() % sisa];
     }
     
-    for(i=0; i<7; i++){
-    	Pemain[giliran].huruf[i] = string[i];	
+    i = 0;
+    j = 7 - kurang;
+	while(i < kurang && j < 7){
+		Pemain[giliran].huruf[j] = string[i];
+		i++;
+		j++;
 	}
 	
 	kurangiHuruf(string);
