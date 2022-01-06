@@ -3,6 +3,7 @@
 #include<string.h>
 #include<stdbool.h>
 #include<ctype.h>
+#include<windows.h>
 
 //Deklarasi Modul Menu
 void tampilMenu();
@@ -33,6 +34,7 @@ int getKata(char *kata, int baris, int kolom, int arah);
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
 int cekHuruf(char *kata, int giliran);
 void susunHuruf(char *kata, int giliran); //untuk mengurangi huruf yang dimiliki pemain yang telah disubmit ke papan
+void timerCountdown(int *jumlahPass, int levelPermainan);
 
 //Deklarasi Modul validasi posisi kata pada papan
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran);
@@ -934,4 +936,34 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 	getchar();
 }
 
-
+void timerCountdown(int *jumlahPass, int levelPermainan){
+	int i;
+	if(levelPermainan == 1){
+		for(i=420;i>=0;i--){
+    		printf("%d menit %d detik", i/60,i%60);
+    		Sleep(1000);
+    		system("cls");
+    		if(i==0){
+    			*jumlahPass += 1;
+			}
+		}
+	}else if(levelPermainan == 2){
+		for(i=300;i>=0;i--){
+    		printf("%d menit %d detik", i/60,i%60);
+    		Sleep(1000);
+    		system("cls");
+    		if(i==0){
+    			*jumlahPass += 1;
+			}
+		}
+	}else{
+		for(i=210;i>=0;i--){
+    		printf("%d menit %d detik", i/60,i%60);
+    		Sleep(1000);
+    		system("cls");
+    		if(i==0){
+    			*jumlahPass += 1;
+			}
+		}
+	}
+}
