@@ -171,8 +171,21 @@ void tampilTentang(){
 }
 
 void endProgram(){
-	system("cls");
-	printf("Terima kasih sudah bermain DaScrabble");
+	char pilihanKeluar;
+	printf("Apakah anda yakin ingin keluar ? [Y/N] ");fflush(stdin);scanf("%c", &pilihanKeluar);
+	if(pilihanKeluar == 'Y' || pilihanKeluar == 'y'){
+		printf("Terima kasih sudah bermain DaScrabble");
+	}
+	else if(pilihanKeluar == 'N' || pilihanKeluar == 'n'){
+		system("cls");
+		tampilMenu();
+	}
+	else{
+		printf("Mohon maaf kode yang anda inputkan tidak valid pastikan mengisi dengan Y / N");
+		Sleep(2000);
+		system("cls");
+		tampilMenu();
+	}
 }
 
 void mulaiPermainan(){
@@ -288,11 +301,11 @@ void mulaiPermainan(){
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	system("cls");
 	if (Pemain[0].score > Pemain[1].score){
-		printf("Selamat kepada $s telah memenangkan permainan ini dengan score $d", Pemain[0].nama_pemain, Pemain[0].score);
+		printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[0].nama_pemain, Pemain[0].score);
 		writeHighscores(Pemain[0].nama_pemain, Pemain[0].score, level);
 	}
 	else{
-		printf("Selamat kepada $s telah memenangkan permainan ini dengan score $d", Pemain[1].nama_pemain, Pemain[1].score);
+		printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[1].nama_pemain, Pemain[1].score);
 		writeHighscores(Pemain[1].nama_pemain, Pemain[1].score, level);
 	}
 }
@@ -355,7 +368,7 @@ void inputNama(int pilihan){
 	}
 }
 
-int  pilihLevel(){
+int pilihLevel(){
 	int pilih;
 	int level;
 	
