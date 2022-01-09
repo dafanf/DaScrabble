@@ -43,7 +43,7 @@ void insertKePapan(char *temp, int baris, int kolom, int arah);
 //Deklarasi Modul yang berhubungan dengan File
 int cekKamus(char *kata);
 void readHighscores();
-void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]);
+void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru);
 void readHTPFile();
 
 typedef struct {
@@ -223,6 +223,7 @@ void mulaiPermainan(){
 		showPoin(giliran);
 		
 		restart:
+		timerCountdown(&jumPass, level);
 		printf("\n\n  1. Jawab");
 		printf("\n  2. Pass");
 		printf("\n  3. Menyerah");
@@ -261,13 +262,32 @@ void mulaiPermainan(){
 			}
 			
 		}
-		
+		else if(pilihMain == 2){
+			jumPass = jumPass + 1;
+		}
+		else if(pilihMain == 3){
+			isMenyerah = true;
+			Pemain[giliran].score = 0;
+		}
+		else{
+			printf("Input kurang tepat harap masukan kode yang tersedia");
+			Sleep(2000);
+			system("cls");
+			goto restart;
+		}
 		printf("\n  baris : %d",baris);
 		printf("\n  kolom : %d",kolom);
 		printf("\n  arah : %d",arah);
 		printf("\n  kata : %s\n",kata);
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
-	
+	if (Pemain[0].score > Pemain[1].score){
+		printf("Selamat kepada $s telah memenangkan permainan ini dengan score $d", Pemain[0].nama_pemain, Pemain[0].score);
+		writeHighscores(Pemain[0].nama_pemain, Pemain[0].score, level);
+	}
+	else{
+		printf("Selamat kepada $s telah memenangkan permainan ini dengan score $d", Pemain[1].nama_pemain, Pemain[1].score);
+		writeHighscores(Pemain[1].nama_pemain, Pemain[1].score, level);
+	}
 }
 
 int registPemain(){
@@ -912,10 +932,20 @@ void kurangiHuruf(char *string){
 	}
 }
 
-void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
+void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	highScore testHighscore[6];
     bool isMengisi = false;
     int i = 0;
+    char stringLevel[10];
+    if (levelBaru == 1){
+    	strcpy(stringLevel, "Easy");
+	}
+	else if (levelBaru == 2){
+    	strcpy(stringLevel, "Medium");
+	}
+	else{
+    	strcpy(stringLevel, "Hard");
+	}
 	FILE *in=fopen("updatedHighscore.txt","r+");//perintah untuk membuka file dengan mode r / read
     while(!feof(in)){
         fscanf(in,"%[^#]#%d#%[^\n]\n", &testHighscore[i].nama, &testHighscore[i].score, &testHighscore[i].level);fflush(stdin);
@@ -925,7 +955,7 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 	FILE *out=fopen("updatedHighscore.txt","w");
 	for(i = 0; i < 6;i++){
         if(scoreBaru >= testHighscore[i].score && isMengisi==false){
-        	fprintf(out,"%s#%d#%s\n", namaBaru, scoreBaru, levelBaru);
+        	fprintf(out,"%s#%d#%s\n", namaBaru, scoreBaru, stringLevel);
         	isMengisi = true;
 		}
 		else{
@@ -933,6 +963,7 @@ void writeHighscores(char namaBaru[100], int scoreBaru, char levelBaru[10]){
 		}
 	}
 	fclose(out);
+	printf("Tekan enter untuk melanjutkan......");
 	getchar();
 }
 
@@ -940,27 +971,27 @@ void timerCountdown(int *jumlahPass, int levelPermainan){
 	int i;
 	if(levelPermainan == 1){
 		for(i=420;i>=0;i--){
-    		printf("%d menit %d detik", i/60,i%60);
+//    		printf("%d menit %d detik", i/60,i%60);
     		Sleep(1000);
-    		system("cls");
+//    		system("cls");
     		if(i==0){
     			*jumlahPass += 1;
 			}
 		}
 	}else if(levelPermainan == 2){
 		for(i=300;i>=0;i--){
-    		printf("%d menit %d detik", i/60,i%60);
+//    		printf("%d menit %d detik", i/60,i%60);
     		Sleep(1000);
-    		system("cls");
+//    		system("cls");
     		if(i==0){
     			*jumlahPass += 1;
 			}
 		}
 	}else{
 		for(i=210;i>=0;i--){
-    		printf("%d menit %d detik", i/60,i%60);
+//    		printf("%d menit %d detik", i/60,i%60);
     		Sleep(1000);
-    		system("cls");
+//    		system("cls");
     		if(i==0){
     			*jumlahPass += 1;
 			}
