@@ -4,7 +4,7 @@
 #include<stdbool.h>
 #include<ctype.h>
 #include<windows.h>
-
+#include<time.h>
 //Deklarasi Modul Menu
 void tampilMenu();
 void mulaiPermainan();
@@ -34,7 +34,9 @@ int getKata(char *kata, int baris, int kolom, int arah);
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
 int cekHuruf(char *kata, int giliran);
 void susunHuruf(char *kata, int giliran); //untuk mengurangi huruf yang dimiliki pemain yang telah disubmit ke papan
-int timerCountdown(int *jumlahPass, int levelPermainan);
+int startTimer();
+int finishTimer();
+int timerCountdown(int *jumlahPass, int levelPermainan, int lastTime);
 
 //Deklarasi Modul validasi posisi kata pada papan
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int level);
@@ -185,6 +187,7 @@ void mulaiPermainan(){
 	bool isMenyerah = false; 
 	bool isHabis = false; //kondisi jika huruf persediaan dan huruf pemain habis
 	int panjang;
+	int lamaMain;
 	
 	system("cls");
 	level = registPemain();
@@ -224,17 +227,13 @@ void mulaiPermainan(){
 		showPoin(giliran);
 		
 		restart:
-		timerCountdown(&jumPass, level);
+		lamaMain = startTimer();
 		printf("\n\n  1. Jawab");
 		printf("\n  2. Pass");
 		printf("\n  3. Menyerah");
 		printf("\n  Masukkan pilihan : ");
 		scanf("%d", &pilihMain);
 		fflush(stdin);
-		if(timerCountdown(&jumPass, level)){
-			printf("\nWaktu Habis.");
-			
-		}
 		if(pilihMain==1){
 			// input baris kolom
 			do{
@@ -261,9 +260,15 @@ void mulaiPermainan(){
 				goto restart;
 			}
 			
-			result = cekPosisiKata(kata, baris, kolom, arah, giliran, level);
-			if(result == 0){
-				goto inputkata;
+			lamaMain = finishTimer() - lamaMain;
+			if(timerCountdown(&jumPass, level, lamaMain)){
+				result = cekPosisiKata(kata, baris, kolom, arah, giliran, level);
+				if(result == 0){
+					goto inputkata;
+				}
+			}
+			else{
+				goto nexturn;
 			}
 			
 		}
@@ -996,36 +1001,41 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	getchar();
 }
 
-int timerCountdown(int *jumlahPass, int levelPermainan){
-	int i;
+int startTimer()
+{
+    clock_t timeStart;
+    timeStart = clock();
+    return timeStart;
+}
+
+int finishTimer()
+{
+    clock_t timeEnd;
+    timeEnd = clock();
+    return timeEnd;
+}
+
+int timerCountdown(int *jumPass, int levelPermainan, int lastTime){
+	int timeLimit;
+	double time_in_sec;
+	time_in_sec = ((double)lastTime)/CLOCKS_PER_SEC;
 	if(levelPermainan == 1){
-		for(i=0;i>=10;i++){
-//    		printf("%d menit %d detik", i/60,i%60);
-    		Sleep(1000);
-//    		system("cls");
-    		if(i>=10){
-    			*jumlahPass += 1;
-    			return 1;
-			}
-		}
-	}else if(levelPermainan == 2){
-		for(i=300;i>=0;i--){
-//    		printf("%d menit %d detik", i/60,i%60);
-    		Sleep(1000);
-//    		system("cls");
-    		if(i==0){
-    			*jumlahPass += 1;
-			}
-		}
-	}else{
-		for(i=210;i>=0;i--){
-//    		printf("%d menit %d detik", i/60,i%60);
-    		Sleep(1000);
-//    		system("cls");
-    		if(i==0){
-    			*jumlahPass += 1;
-			}
-		}
+		timeLimit = 420;
 	}
-	return 0;
+	else if(levelPermainan == 2){
+		timeLimit = 300;
+	}
+	else{
+		timeLimit = 210;
+	}
+	//periksa waktu
+	if(time_in_sec > timeLimit){
+        printf("waktu habis %.2f\n", time_in_sec);
+        *jumPass += 1;
+        return 0;
+    }
+    else{
+        printf("berhasil %.2f\n", time_in_sec);
+        return 1;
+    }
 }
