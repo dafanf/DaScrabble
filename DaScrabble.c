@@ -34,14 +34,14 @@ int getKata(char *kata, int baris, int kolom, int arah);
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
 int cekHuruf(char *kata, int giliran);
 void susunHuruf(char *kata, int giliran); //untuk mengurangi huruf yang dimiliki pemain yang telah disubmit ke papan
-void timerCountdown(int *jumlahPass, int levelPermainan);
+int timerCountdown(int *jumlahPass, int levelPermainan);
 
 //Deklarasi Modul validasi posisi kata pada papan
-int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran);
+int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int level);
 void insertKePapan(char *temp, int baris, int kolom, int arah);
 
 //Deklarasi Modul yang berhubungan dengan File
-int cekKamus(char *kata);
+int cekKamus(char *kata, int level);
 void readHighscores();
 void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru);
 void readHTPFile();
@@ -194,8 +194,9 @@ void mulaiPermainan(){
 	inisialisasiPapan(); //pengisian nilai awal papan
 	
 	do{
+		nexturn:
 		giliran = (giliran + 1) % 2; //pergantian giliran pemain 0 dan 1
-		//system("cls");
+		system("cls");
 		switch(level){
 			case 1 : printf("\n  Level : Easy");
 				break;
@@ -230,6 +231,10 @@ void mulaiPermainan(){
 		printf("\n  Masukkan pilihan : ");
 		scanf("%d", &pilihMain);
 		fflush(stdin);
+		if(timerCountdown(&jumPass, level)){
+			printf("\nWaktu Habis.");
+			
+		}
 		if(pilihMain==1){
 			// input baris kolom
 			do{
@@ -256,7 +261,7 @@ void mulaiPermainan(){
 				goto restart;
 			}
 			
-			result = cekPosisiKata(kata, baris, kolom, arah, giliran);
+			result = cekPosisiKata(kata, baris, kolom, arah, giliran, level);
 			if(result == 0){
 				goto inputkata;
 			}
@@ -275,11 +280,8 @@ void mulaiPermainan(){
 			system("cls");
 			goto restart;
 		}
-		printf("\n  baris : %d",baris);
-		printf("\n  kolom : %d",kolom);
-		printf("\n  arah : %d",arah);
-		printf("\n  kata : %s\n",kata);
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
+	system("cls");
 	if (Pemain[0].score > Pemain[1].score){
 		printf("Selamat kepada $s telah memenangkan permainan ini dengan score $d", Pemain[0].nama_pemain, Pemain[0].score);
 		writeHighscores(Pemain[0].nama_pemain, Pemain[0].score, level);
@@ -600,7 +602,7 @@ int cekHuruf(char *kata, int giliran){
 	return 1;
 }
 
-int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
+int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int level){
 	char temp[15] = " ";
 	int i = baris;
 	int j = kolom;
@@ -685,7 +687,7 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran){
 	}
 	else{
 		if(cekHuruf(kata, giliran)){
-			if(cekKamus(temp)){
+			if(cekKamus(temp, level)){
 				hitungScore(temp, baris, kolom, arah, giliran);
 				insertKePapan(temp, baris, kolom, arah);
 				susunHuruf(kata, giliran);
@@ -778,19 +780,46 @@ void insertKePapan(char *temp, int baris, int kolom, int arah){
 	printf("\n  %s", temp);
 }
 
-int cekKamus(char *kata){
+int cekKamus(char *kata, int level){
     char nama[100];
     kata = strlwr(kata);
-	FILE *in=fopen("words2.txt","r");
-        while(!feof(in)){
-           fscanf(in,"%[^\n]\n", &nama);fflush(stdin);
-           // %[^\n] artinya kita menyimpan bagian dari string dalam file \n atau newline
-		   if(strcmp(nama, kata) == 0){
-		   		return 1;
-				break;
-		   }
-        }
-	fclose(in);
+    if(level == 1){
+    	FILE *in=fopen("wordseasy.txt","r");
+	        while(!feof(in)){
+	           fscanf(in,"%[^\n]\n", &nama);fflush(stdin);
+	           // %[^\n] artinya kita menyimpan bagian dari string dalam file \n atau newline
+			   if(strcmp(nama, kata) == 0){
+			   		return 1;
+					break;
+			   }
+	        }
+		fclose(in);
+	}
+	else if(level == 2){
+		FILE *in=fopen("wordsmedium.txt","r");
+	        while(!feof(in)){
+	           fscanf(in,"%[^\n]\n", &nama);fflush(stdin);
+	           // %[^\n] artinya kita menyimpan bagian dari string dalam file \n atau newline
+			   if(strcmp(nama, kata) == 0){
+			   		return 1;
+					break;
+			   }
+	        }
+		fclose(in);
+	}
+	else{
+		FILE *in=fopen("wordshard.txt","r");
+	        while(!feof(in)){
+	           fscanf(in,"%[^\n]\n", &nama);fflush(stdin);
+	           // %[^\n] artinya kita menyimpan bagian dari string dalam file \n atau newline
+			   if(strcmp(nama, kata) == 0){
+			   		return 1;
+					break;
+			   }
+	        }
+		fclose(in);
+	}
+	
 	
 	return 0;
 }
@@ -967,15 +996,16 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	getchar();
 }
 
-void timerCountdown(int *jumlahPass, int levelPermainan){
+int timerCountdown(int *jumlahPass, int levelPermainan){
 	int i;
 	if(levelPermainan == 1){
-		for(i=420;i>=0;i--){
+		for(i=0;i>=10;i++){
 //    		printf("%d menit %d detik", i/60,i%60);
     		Sleep(1000);
 //    		system("cls");
-    		if(i==0){
+    		if(i>=10){
     			*jumlahPass += 1;
+    			return 1;
 			}
 		}
 	}else if(levelPermainan == 2){
@@ -997,4 +1027,5 @@ void timerCountdown(int *jumlahPass, int levelPermainan){
 			}
 		}
 	}
+	return 0;
 }
