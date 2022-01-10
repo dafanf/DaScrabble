@@ -209,7 +209,8 @@ void mulaiPermainan(){
 	bool isMenyerah = false; 
 	bool isHabis = false; //kondisi jika huruf persediaan dan huruf pemain habis
 	int panjang;
-	int lamaMain;
+	int lamaMain = 0;
+	int mulaiMain;
 	int menit, detik = 0;
 	
 	system("cls");
@@ -222,6 +223,9 @@ void mulaiPermainan(){
 	do{
 		nexturn:
 		giliran = (giliran + 1) % 2; //pergantian giliran pemain 0 dan 1
+		system("cls");
+		mulaiMain = startTimer();
+		restart:
 		system("cls");
 		switch(level){
 			case 1 : printf("\n  Level : Easy");
@@ -241,7 +245,6 @@ void mulaiPermainan(){
 		
 		printPapan(); //menampilkan papan dan isinya
 		
-		
 		panjang = strlen(Pemain[giliran].huruf);
 		kurang = 7 - panjang;
 		
@@ -254,67 +257,91 @@ void mulaiPermainan(){
 		showPoin(giliran);
 		printf("\n\n  Ingat waktu giliran adalah %d menit %d detik.", menit, detik);
 		
-		restart:
-		lamaMain = startTimer();
 		printf("\n\n  1. Jawab");
 		printf("\n  2. Pass");
 		printf("\n  3. Menyerah");
 		printf("\n  Masukkan pilihan : ");
 		scanf("%d", &pilihMain);
 		fflush(stdin);
-		if(pilihMain==1){
-			//reset jumlah pass
-			jumPass = 0;
-			// input baris kolom
-			do{
-				result = getPosisi(&baris, &kolom);
-			}while(result == 0);
-			if(result == -1){
-				goto restart;
-			}
-				
-			// input horizontal atau vertikal
-			do{
-				result = getArah(&arah);
-			}while(result == 0);
-			if(result == -1){
-				goto restart;
-			}
-			
-			// input kata
-			inputkata:
-			do{
-				result = getKata(kata, baris, kolom, arah);
-			}while(result == 0);
-			if(result == -1){
-				goto restart;
-			}
-			
-			lamaMain = finishTimer() - lamaMain;
-			if(timerCountdown(&jumPass, level, lamaMain)){
-				result = cekPosisiKata(kata, baris, kolom, arah, giliran, level);
-				if(result == 0){
-					goto inputkata;
+		
+		lamaMain = finishTimer() - mulaiMain;
+		if(timerCountdown(&jumPass, level, lamaMain)){
+			if(pilihMain==1){
+				//reset jumlah pass
+				jumPass = 0;
+				// input baris kolom
+				lamaMain = finishTimer() - mulaiMain;
+				if(timerCountdown(&jumPass, level, lamaMain)){
+					do{
+					result = getPosisi(&baris, &kolom);
+					}while(result == 0);
+					if(result == -1){
+						goto restart;
+					}
 				}
+				else{
+					goto nexturn;
+				}
+					
+				// input horizontal atau vertikal
+				lamaMain = finishTimer() - mulaiMain;
+				if(timerCountdown(&jumPass, level, lamaMain)){
+					do{
+						result = getArah(&arah);
+					}while(result == 0);
+					if(result == -1){
+						goto restart;
+					}
+				}
+				else{
+					goto nexturn;
+				}
+				
+				// input kata
+				inputkata:
+				lamaMain = finishTimer() - mulaiMain;
+				if(timerCountdown(&jumPass, level, lamaMain)){
+					do{
+						result = getKata(kata, baris, kolom, arah);
+					}while(result == 0);
+					if(result == -1){
+						goto restart;
+					}
+				}
+				else{
+					goto nexturn;
+				}
+				
+				lamaMain = finishTimer() - mulaiMain;
+				if(timerCountdown(&jumPass, level, lamaMain)){
+					result = cekPosisiKata(kata, baris, kolom, arah, giliran, level);
+					if(result == 0){
+						goto inputkata;
+					}
+				}
+				else{
+					goto nexturn;
+				}
+				
+			}
+			else if(pilihMain == 2){
+				jumPass = jumPass + 1;
+			}
+			else if(pilihMain == 3){
+				isMenyerah = true;
+				Pemain[giliran].score = 0;
 			}
 			else{
-				goto nexturn;
+				printf("\a  Input kurang tepat harap masukan kode yang tersedia");
+				Sleep(2000);
+				system("cls");
+				goto restart;
 			}
-			
-		}
-		else if(pilihMain == 2){
-			jumPass = jumPass + 1;
-		}
-		else if(pilihMain == 3){
-			isMenyerah = true;
-			Pemain[giliran].score = 0;
 		}
 		else{
-			printf("\a  Input kurang tepat harap masukan kode yang tersedia");
-			Sleep(2000);
-			system("cls");
-			goto restart;
+			goto nexturn;
 		}
+		
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	system("cls");
 	if(isMenyerah){
@@ -765,8 +792,7 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 				susunHuruf(kata, giliran);
 			}
 			else{
-				printf("\a  Kata tidak valid, coba lagi,");
-				printf("  %s", temp);
+				printf("\a  Kata tidak valid, coba lagi.");
 				Sleep(1000);
 				return 0;
 			}
@@ -1088,7 +1114,7 @@ int finishTimer()
 
 int timerCountdown(int *jumPass, int levelPermainan, int lastTime){
 	int timeLimit;
-	double time_in_sec;
+	double time_in_sec = 0.0;
 	time_in_sec = ((double)lastTime)/CLOCKS_PER_SEC;
 	if(levelPermainan == 1){
 		timeLimit = 420;
@@ -1101,12 +1127,13 @@ int timerCountdown(int *jumPass, int levelPermainan, int lastTime){
 	}
 	//periksa waktu
 	if(time_in_sec > timeLimit){
-        printf("waktu habis %.2f\n", time_in_sec);
+        printf("\n  waktu habis %.2f\n", time_in_sec);
+        Sleep(1000);
         *jumPass += 1;
         return 0;
     }
     else{
-        printf("berhasil %.2f\n", time_in_sec);
+        //printf("\n  berhasil %.2f\n", time_in_sec);
         return 1;
     }
 }
