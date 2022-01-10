@@ -132,7 +132,7 @@ void readHighscores(){
         }
 	fclose(in);//perintah untuk menutup file yang tadi dibuka
 	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
-	getchar(); 
+	getch(); 
 	tampilMenu();
 }
 
@@ -149,7 +149,7 @@ void readHTPFile(){
     }
 	fclose(in);//perintah untuk menutup file yang tadi dibuka
 	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
-	getchar();
+	getch();
 	tampilMenu();
 }
 
@@ -166,7 +166,7 @@ void tampilTentang(){
     }
 	fclose(in);//perintah untuk menutup file yang tadi dibuka
 	printf("\nTekan tombol apapun untuk kembali ke menu utama.....");
-	getchar();
+	getch();
 	tampilMenu();
 }
 
@@ -201,6 +201,7 @@ void mulaiPermainan(){
 	bool isHabis = false; //kondisi jika huruf persediaan dan huruf pemain habis
 	int panjang;
 	int lamaMain;
+	int menit, detik = 0;
 	
 	system("cls");
 	level = registPemain();
@@ -215,10 +216,14 @@ void mulaiPermainan(){
 		system("cls");
 		switch(level){
 			case 1 : printf("\n  Level : Easy");
+					 menit = 7;
 				break;
 			case 2 : printf("\n  Level : Medium");
+					 menit = 5;
 				break;
 			case 3 : printf("\n  Level : Hard");
+					 menit = 3;
+					 detik = 30;
 				break;
 		}
 		
@@ -232,12 +237,13 @@ void mulaiPermainan(){
 		kurang = 7 - panjang;
 		
 		randomHuruf(hitungSisa(), giliran, kurang);
-		printf("\n\n  Giliran: %s \t  Waktu: 01:23\t  Sisa Huruf: %d", Pemain[giliran].nama_pemain, hitungSisa());
+		printf("\n\n  Giliran: %s \t  \tSisa Huruf: %d", Pemain[giliran].nama_pemain, hitungSisa());
 		
 		printf("\n\n\t\t");
 		showHuruf(giliran);
 		printf("\n\n\t\t");
 		showPoin(giliran);
+		printf("\n\n  Ingat waktu giliran adalah %d menit %d detik.", menit, detik);
 		
 		restart:
 		lamaMain = startTimer();
@@ -301,12 +307,18 @@ void mulaiPermainan(){
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	system("cls");
 	if (Pemain[0].score > Pemain[1].score){
-		printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[0].nama_pemain, Pemain[0].score);
+		printf("\nSelamat kepada %s telah memenangkan permainan ini dengan score %d\n\n", Pemain[0].nama_pemain, Pemain[0].score);
 		writeHighscores(Pemain[0].nama_pemain, Pemain[0].score, level);
 	}
-	else{
-		printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[1].nama_pemain, Pemain[1].score);
+	else if(Pemain[0].score < Pemain[1].score){
+		printf("\nSelamat kepada %s telah memenangkan permainan ini dengan score %d\n\n", Pemain[1].nama_pemain, Pemain[1].score);
 		writeHighscores(Pemain[1].nama_pemain, Pemain[1].score, level);
+	}
+	else{
+		printf("\nAkhir permainan seri dengan skor %s %d dan %s %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
+		printf("Tekan enter untuk melanjutkan......");
+		getch();
+		tampilMenu();
 	}
 }
 
@@ -1011,7 +1023,8 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	}
 	fclose(out);
 	printf("Tekan enter untuk melanjutkan......");
-	getchar();
+	getch();
+	tampilMenu();
 }
 
 int startTimer()

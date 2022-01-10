@@ -1,12 +1,16 @@
 Cara Bermain
 1. Pilih menu play dengan mengetikkan angka [1] pada tampilan menu pertama
 2. Isi semua data yang diperlukan serta aturan seperti apa yang diinginkan
-3. Terdapat 3 pilihan saat bermain yaitu Jawab, Pass dan Menyerah
-4. Menu jawab berfungsi untuk mengisi jawaban anda ke atas papan, ketik angka [1] untuk menjawab.
-    a. Perhatikan huruf dan angka yang ada di kiri dan atas papan, huruf merupakan penanda koordinat x (horizontal) dan angka merupakan penanda koordinat y (vertikal). Ketikkan posisi koordinat (x, y) yang diinginkan sebagai posisi huruf pertama yang ingin disusun.
-    b. Tentukan arah menyusunnya, horizontal atau vertikal. Ketikkan [H] / [h] untuk horizontal dan [V] / [v] untuk vertikal. Jika ingin mengulang bisa tekan tombol [enter] untuk mengulang kembali ke pilihan bermain.
-    c. Ketikkan huruf-huruf yang ingin disusun pada papan secara terurut. Jika ingin mengulang bisa ketikkan [.] untuk mengulang kembali ke pilihan bermain.
-5. Menu pass berfungsi untuk melewat giliran, jika anda dan lawan anda memilih pass secara berturut, maka permainan akan berakhir dengan pemain yang meraih skor tertinggi yang menjadi pemenang.
-6. Menu menyerah untuk menyerah dan lawan anda akan otomatis menang.
-7. Jika huruf yang ada di persediaan habis dan huruf yang anda pegang atau lawan anda pegang pun habis, maka permainan akan berakhir dengan pemain yang meraih skor tertinggi menjadi pemenang.
-8. Selamat Bermain!
+3. Terdapat 3 level dalam permainan.
+3.1. Level easy, kamus yang digunakan kamus bahasa inggris universal, dan waktu setiap giliran dibatasi 7 menit
+3.2. Level medium, kamus yang digunakan kamus bahasa inggris mengenai hewan, dan waktu setiap giliran dibatasi 5 menit
+3.2. Level hard, kamus yang digunakan kamus bahasa inggris mengenai makanan, dan waktu setiap giliran dibatasi 5 menit
+4. Terdapat 3 pilihan saat bermain yaitu Jawab, Pass dan Menyerah
+5. Menu jawab berfungsi untuk mengisi jawaban anda ke atas papan, ketik angka [1] untuk menjawab.
+5.1. Perhatikan huruf dan angka yang ada di kiri dan atas papan, huruf merupakan penanda koordinat x (horizontal) dan angka merupakan penanda koordinat y (vertikal). Ketikkan posisi koordinat (x, y) yang diinginkan sebagai posisi huruf pertama yang ingin disusun.
+5.2. Tentukan arah menyusunnya, horizontal atau vertikal. Ketikkan [H] / [h] untuk horizontal dan [V] / [v] untuk vertikal. Jika ingin mengulang bisa tekan tombol [enter] untuk mengulang kembali ke pilihan bermain.
+5.3. Ketikkan huruf-huruf yang ingin disusun pada papan secara terurut. Jika ingin mengulang bisa ketikkan [.] untuk mengulang kembali ke pilihan bermain.
+6. Menu pass berfungsi untuk melewat giliran, jika anda dan lawan anda memilih pass secara berturut, maka permainan akan berakhir dengan pemain yang meraih skor tertinggi yang menjadi pemenang.
+7. Menu menyerah untuk menyerah dan lawan anda akan otomatis menang.
+8. Jika huruf yang ada di persediaan habis dan huruf yang anda pegang atau lawan anda pegang pun habis, maka permainan akan berakhir dengan pemain yang meraih skor tertinggi menjadi pemenang.
+9. Selamat Bermain!
