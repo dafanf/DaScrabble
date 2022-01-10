@@ -48,6 +48,8 @@ void readHighscores();
 void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru);
 void readHTPFile();
 
+//Modul gotoxy untuk posisi
+void gotoxy(int x, int y);
 typedef struct {
 	char huruf;
 	int nilaiHuruf;
@@ -85,6 +87,13 @@ int main(){
 	return 0;
 }
 
+void gotoxy(int x, int y) {
+  COORD coord;
+  coord.X = x;
+  coord.Y = y;
+  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
 void tampilMenu(){
 	int pilihMenu;
 	
@@ -92,13 +101,13 @@ void tampilMenu(){
 	do{
 		main:
 		system("cls");
-		printf("DaScrabble\n\n");
-		printf("1. Main\n");
-		printf("2. Papan Peringkat\n");
-		printf("3. Cara Bermain\n");
-		printf("4. Tentang\n");
-		printf("5. Keluar\n");
-		printf("\nMasukkan nomor menu : ");
+		gotoxy(47,9); printf("DaScrabble");
+		gotoxy(47,11); printf("1. Main");
+		gotoxy(47,12); printf("2. Papan Peringkat");
+		gotoxy(47,13); printf("3. Cara Bermain");
+		gotoxy(47,14); printf("4. Tentang");
+		gotoxy(47,15); printf("5. Keluar");
+		gotoxy(47,17); printf("Masukkan nomor menu : ");
 		scanf("%d", &pilihMenu);
 		
 		switch(pilihMenu){
@@ -112,7 +121,7 @@ void tampilMenu(){
 				break;
 			case 5 : endProgram(); 
 				break;
-			default : printf("\a Menu tidak tersedia."); Sleep(3000);
+			default : system("cls"); gotoxy(47,15); printf("\a Menu tidak tersedia."); Sleep(2000);
 		}
 	} while(pilihMenu < 1 || pilihMenu > 5 );
 }
@@ -301,24 +310,31 @@ void mulaiPermainan(){
 			Pemain[giliran].score = 0;
 		}
 		else{
-			printf("\aInput kurang tepat harap masukan kode yang tersedia");
+			printf("\a  Input kurang tepat harap masukan kode yang tersedia");
 			Sleep(2000);
 			system("cls");
 			goto restart;
 		}
 	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	system("cls");
+	if(isMenyerah){
+		gotoxy(10,10); printf("%s menyerah.", Pemain[giliran].nama_pemain);
+		giliran = (giliran + 1) % 2;
+		gotoxy(10,12); printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[giliran].nama_pemain, Pemain[giliran].score);
+		gotoxy(10,15); writeHighscores(Pemain[giliran].nama_pemain, Pemain[giliran].score, level);
+	}
 	if (Pemain[0].score > Pemain[1].score){
-		printf("\nSelamat kepada %s telah memenangkan permainan ini dengan score %d\n\n", Pemain[0].nama_pemain, Pemain[0].score);
-		writeHighscores(Pemain[0].nama_pemain, Pemain[0].score, level);
+		gotoxy(10,10); printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[0].nama_pemain, Pemain[0].score);
+		gotoxy(10,13);writeHighscores(Pemain[0].nama_pemain, Pemain[0].score, level);
 	}
 	else if(Pemain[0].score < Pemain[1].score){
-		printf("\nSelamat kepada %s telah memenangkan permainan ini dengan score %d\n\n", Pemain[1].nama_pemain, Pemain[1].score);
+		gotoxy(10,10); printf("Selamat kepada %s telah memenangkan permainan ini dengan score %d", Pemain[1].nama_pemain, Pemain[1].score);
 		writeHighscores(Pemain[1].nama_pemain, Pemain[1].score, level);
+		gotoxy(10,13); 
 	}
 	else{
-		printf("\nAkhir permainan seri dengan skor %s %d dan %s %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
-		printf("Tekan enter untuk melanjutkan......");
+		gotoxy(10,10); printf("Akhir permainan seri dengan skor %s %d dan %s %d", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
+		gotoxy(10,13); printf("Tekan enter untuk melanjutkan......");
 		getch();
 		tampilMenu();
 	}
@@ -344,10 +360,10 @@ int  pilihPemain(){
 	do{
 		pilihMode:
 		system("cls");
-		printf("Pilih Pemain\n");
-		printf("1. manusia vs manusia\n");
-		printf("2. manusia vs komputer\n\n");
-		printf("Masukkan nomor pilihan : ");
+		gotoxy(47,9); printf("Pilih Pemain");
+		gotoxy(47,11); printf("1. manusia vs manusia");
+		gotoxy(47,12); printf("2. manusia vs komputer");
+		gotoxy(47,14); printf("Masukkan nomor pilihan : ");
 		scanf("%d", &pilih);
 		
 		switch(pilih){
@@ -356,13 +372,16 @@ int  pilihPemain(){
 				break;
 			case 2 : 
 				pemain = 1;
-				printf("\a Maaf pilihan mode bermain masih dalam tahap pengembahan harap coba menu lain terlebih dahulu");
+				system("cls");
+				gotoxy(34,9); printf("\a Maaf pilihan mode bermain masih dalam tahap ");
+				gotoxy(34,10); printf("\a pengembangan harap coba menu lain terlebih dahulu");
 				Sleep(4000);
 				goto pilihMode;
 				break;
 			default : 
-				printf("\a Maaf pilihan mode bermain tidak tersedia");
-				Sleep(3000);
+				system("cls");
+				gotoxy(35,9); printf("\a Maaf pilihan mode bermain tidak tersedia");
+				Sleep(2000);
 				break;
 		}
 	} while(pilih > 2 || pilih < 1);
@@ -372,11 +391,11 @@ int  pilihPemain(){
 
 void inputNama(int pilihan){
 	system("cls");
-	printf("Pastikan mengisi nama dengan benar, karena hanya 1 kali kesempatan.\n\n");
+	gotoxy(20,7); printf("Pastikan mengisi nama dengan benar, karena hanya 1 kali kesempatan.");
 	if(pilihan == 2){
-		printf("Nama Pemain 1 (maks. 30 karakter): ");
+		gotoxy(20,10); printf("Nama Pemain 1 (maks. 30 karakter): ");
 		scanf("%s", Pemain[0].nama_pemain);
-		printf("\nNama Pemain 2 (maks. 30 karakter): ");
+		gotoxy(20,12); printf("Nama Pemain 2 (maks. 30 karakter): ");
 		scanf("%s", Pemain[1].nama_pemain);
 	}
 	else{
@@ -398,11 +417,11 @@ int pilihLevel(){
 	do{
 		pilihlevel:
 		system("cls");
-		printf("Pilih level\n");
-		printf("1. Easy\n");
-		printf("2. Medium\n");
-		printf("3. Hard\n\n");
-		printf("Masukkan pilihan level : ");
+		gotoxy(40,8); printf("Pilih level");
+		gotoxy(40,10); printf("1. Easy");
+		gotoxy(40,11); printf("2. Medium");
+		gotoxy(40,12); printf("3. Hard");
+		gotoxy(40,14); printf("Masukkan pilihan level : ");
 		scanf("%d", &pilih);
 		
 		switch(pilih){
@@ -526,7 +545,7 @@ void printPapan(){
 			else{
 				temp = Papan[y][x].isiHuruf;
 			}
-			printf(" %c \xb3",temp);				// X | O | X | O | X |
+			printf(" %c \xb3",toupper(temp));				// X | O | X | O | X |
 		}
 
 		printf((y<15-1) ? "\n \xc3" : "\n \xc0");
@@ -615,7 +634,7 @@ int getKata(char *kata, int baris, int kolom, int arah){
 	}
 	
 	if((length + ((arah) ? baris : kolom)) > 15){
-		printf("\aPosisi kata terlalu panjang, coba lagi.");
+		printf("\a  Posisi kata terlalu panjang, coba lagi.");
 		Sleep(2000);
 		return 0;
 	}
@@ -753,7 +772,7 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 			}
 		}
 		else{
-			printf("\aMasukkan huruf yang sesuai");
+			printf("\a  Masukkan huruf yang sesuai");
 			Sleep(1000);
 			return 0;
 		}
