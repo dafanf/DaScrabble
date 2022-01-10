@@ -112,7 +112,7 @@ void tampilMenu(){
 				break;
 			case 5 : endProgram(); 
 				break;
-			default : printf("Menu tidak tersedia.");
+			default : printf("\a Menu tidak tersedia."); Sleep(3000);
 		}
 	} while(pilihMenu < 1 || pilihMenu > 5 );
 }
@@ -181,8 +181,8 @@ void endProgram(){
 		tampilMenu();
 	}
 	else{
-		printf("Mohon maaf kode yang anda inputkan tidak valid pastikan mengisi dengan Y / N");
-		Sleep(2000);
+		printf("\a Mohon maaf kode yang anda inputkan tidak valid pastikan mengisi dengan Y / N");
+		Sleep(3000);
 		system("cls");
 		tampilMenu();
 	}
@@ -254,6 +254,8 @@ void mulaiPermainan(){
 		scanf("%d", &pilihMain);
 		fflush(stdin);
 		if(pilihMain==1){
+			//reset jumlah pass
+			jumPass = 0;
 			// input baris kolom
 			do{
 				result = getPosisi(&baris, &kolom);
@@ -299,7 +301,7 @@ void mulaiPermainan(){
 			Pemain[giliran].score = 0;
 		}
 		else{
-			printf("Input kurang tepat harap masukan kode yang tersedia");
+			printf("\aInput kurang tepat harap masukan kode yang tersedia");
 			Sleep(2000);
 			system("cls");
 			goto restart;
@@ -340,6 +342,7 @@ int  pilihPemain(){
 	int pemain;
 	
 	do{
+		pilihMode:
 		system("cls");
 		printf("Pilih Pemain\n");
 		printf("1. manusia vs manusia\n");
@@ -348,11 +351,19 @@ int  pilihPemain(){
 		scanf("%d", &pilih);
 		
 		switch(pilih){
-			case 1 : pemain = 2;
+			case 1 : 
+				pemain = 2;
 				break;
-			case 2 : pemain = 1;
+			case 2 : 
+				pemain = 1;
+				printf("\a Maaf pilihan mode bermain masih dalam tahap pengembahan harap coba menu lain terlebih dahulu");
+				Sleep(4000);
+				goto pilihMode;
 				break;
-			default : printf("Pilihan tidak tersedia.");
+			default : 
+				printf("\a Maaf pilihan mode bermain tidak tersedia");
+				Sleep(3000);
+				break;
 		}
 	} while(pilih > 2 || pilih < 1);
 	
@@ -385,6 +396,7 @@ int pilihLevel(){
 	int level;
 	
 	do{
+		pilihlevel:
 		system("cls");
 		printf("Pilih level\n");
 		printf("1. Easy\n");
@@ -400,7 +412,11 @@ int pilihLevel(){
 				break;
 			case 3 : level = 3;
 				break;
-			default : printf("Level tidak tersedia.");
+			default : 
+				printf("\a Maaf pilihan level bermain tidak tersedia");
+				Sleep(3000);
+				goto pilihlevel;
+				break;
 		}
 		
 	} while(pilih < 1 || pilih > 3);
@@ -533,13 +549,15 @@ int getPosisi(int *baris, int *kolom){
 	
 	*baris = row - 0x41;
 	if(*baris < 0 || *baris > 14){
-		printf("  Posisi tidak valid, coba lagi.\n");
+		printf("\a  Posisi tidak valid, coba lagi.\n");
+		Sleep(2000);
 		return 0;
 	}
 	
 	*kolom = col - 1;
 	if(*kolom < 0 || *kolom > 14){
-		printf("  Posisi tidak valid, coba lagi.\n");
+		printf("\a  Posisi tidak valid, coba lagi.\n");
+		Sleep(2000);
 		return 0;
 	}
 	
@@ -548,7 +566,7 @@ int getPosisi(int *baris, int *kolom){
 
 int getArah(int *arah){
 	char dir;
-	
+	pilihArah:
 	printf("\n  Masukkan arah susuh Horizontal(H) atau Vertikal(V), (ENTER) untuk mengulang : ");
 	scanf("%c", &dir);
 	fflush(stdin);
@@ -565,7 +583,9 @@ int getArah(int *arah){
 		return -1;
 	}
 	else{
-		printf("  Arah tidak valid, coba lagi.\n");
+		printf("\a  Arah tidak valid, coba lagi.\n");
+		Sleep(2000);
+		goto pilihArah;
 	}
 		
 	return 0;
@@ -586,7 +606,8 @@ int getKata(char *kata, int baris, int kolom, int arah){
 	strupr(kata);
 	while(i<length){
 		if(kata[i] < 'A' || kata[i] > 'Z'){
-			printf("\n  Kata tidak Valid, coba lagi, pastikan memasukkan huruf yang benar.");
+			printf("\n\a  Kata tidak Valid, coba lagi, pastikan memasukkan huruf yang benar.");
+			Sleep(3000);
 			return 0;
 		}
 		
@@ -594,7 +615,8 @@ int getKata(char *kata, int baris, int kolom, int arah){
 	}
 	
 	if((length + ((arah) ? baris : kolom)) > 15){
-		printf("Posisi kata terlalu panjang, coba lagi.");
+		printf("\aPosisi kata terlalu panjang, coba lagi.");
+		Sleep(2000);
 		return 0;
 	}
 	
@@ -712,7 +734,8 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 	}
 	
 	if(valid == 0){
-		printf("  Posisi tidak tepat, coba lagi.");
+		printf("\a  Posisi tidak tepat, coba lagi.");
+		Sleep(1000);
 		return 0;
 	}
 	else{
@@ -723,13 +746,15 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 				susunHuruf(kata, giliran);
 			}
 			else{
-				printf("  Kata tidak valid, coba lagi,");
+				printf("\a  Kata tidak valid, coba lagi,");
 				printf("  %s", temp);
+				Sleep(1000);
 				return 0;
 			}
 		}
 		else{
-			printf("Masukkan huruf yang sesuai");
+			printf("\aMasukkan huruf yang sesuai");
+			Sleep(1000);
 			return 0;
 		}
 		
@@ -737,7 +762,8 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 	
 	length = strlen(temp);
 	if((length + ((arah) ? baris : kolom)) > 15){
-		printf("  Posisi kata terlalu panjang, coba lagi.");
+		printf("\a  Posisi kata terlalu panjang, coba lagi.");
+		Sleep(1000);
 		return 0;
 	}
 	
