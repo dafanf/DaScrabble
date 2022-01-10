@@ -840,6 +840,10 @@ void susunHuruf(char *kata, int giliran){
 					status = true;
 					kata[counter2] = '\0';
 				}
+				if(Pemain[giliran].huruf[counter1] == '_'){
+					status = true;
+					kata[counter2] = '\0';
+				}
 				counter2++;
 			}while(status == false && counter2 < panjang);
 			
