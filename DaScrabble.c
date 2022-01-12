@@ -101,13 +101,13 @@ void tampilMenu(){
 	do{
 		main:
 		system("cls");
-		gotoxy(47,9); printf("DaScrabble");
-		gotoxy(47,11); printf("1. Main");
-		gotoxy(47,12); printf("2. Papan Peringkat");
-		gotoxy(47,13); printf("3. Cara Bermain");
-		gotoxy(47,14); printf("4. Tentang");
-		gotoxy(47,15); printf("5. Keluar");
-		gotoxy(47,17); printf("Masukkan nomor menu : ");
+		gotoxy(40,9); printf("DaScrabble");
+		gotoxy(40,11); printf("1. Main");
+		gotoxy(40,12); printf("2. Papan Peringkat");
+		gotoxy(40,13); printf("3. Cara Bermain");
+		gotoxy(40,14); printf("4. Tentang");
+		gotoxy(40,15); printf("5. Keluar");
+		gotoxy(40,17); printf("Masukkan nomor menu : ");
 		scanf("%d", &pilihMenu);
 		
 		switch(pilihMenu){
@@ -181,7 +181,7 @@ void tampilTentang(){
 
 void endProgram(){
 	char pilihanKeluar;
-	printf("Apakah anda yakin ingin keluar ? [Y/N] ");fflush(stdin);scanf("%c", &pilihanKeluar);
+	gotoxy(40,19); printf("Apakah anda yakin ingin keluar ? [Y/N] ");fflush(stdin);scanf("%c", &pilihanKeluar);
 	if(pilihanKeluar == 'Y' || pilihanKeluar == 'y'){
 		printf("Terima kasih sudah bermain DaScrabble");
 	}
@@ -190,7 +190,8 @@ void endProgram(){
 		tampilMenu();
 	}
 	else{
-		printf("\a Mohon maaf kode yang anda inputkan tidak valid pastikan mengisi dengan Y / N");
+		gotoxy(40,21); printf("\aMohon maaf kode yang anda inputkan");
+		gotoxy(40,22); printf("\atidak valid pastikan mengisi dengan Y / N");
 		Sleep(3000);
 		system("cls");
 		tampilMenu();
@@ -212,6 +213,7 @@ void mulaiPermainan(){
 	int lamaMain = 0;
 	int mulaiMain;
 	int menit, detik = 0;
+	int sisahuruf = 0;
 	
 	system("cls");
 	level = registPemain();
@@ -248,7 +250,12 @@ void mulaiPermainan(){
 		panjang = strlen(Pemain[giliran].huruf);
 		kurang = 7 - panjang;
 		
-		randomHuruf(hitungSisa(), giliran, kurang);
+		if(hitungSisa() >= kurang){
+			randomHuruf(hitungSisa(), giliran, kurang);	
+		}
+		else{
+			randomHuruf(hitungSisa(), giliran, hitungSisa());	
+		}
 		printf("\n\n  Giliran: %s \t  \tSisa Huruf: %d", Pemain[giliran].nama_pemain, hitungSisa());
 		
 		printf("\n\n\t\t");
@@ -342,7 +349,11 @@ void mulaiPermainan(){
 			goto nexturn;
 		}
 		
-	}while(jumPass < 2 && isMenyerah == false && isHabis == false);
+		sisahuruf = strlen(Pemain[giliran].huruf);
+		if(sisahuruf == 0){
+			isHabis = true;
+		}
+	}	while(jumPass < 2 && isMenyerah == false && isHabis == false);
 	system("cls");
 	if(isMenyerah){
 		gotoxy(10,10); printf("%s menyerah.", Pemain[giliran].nama_pemain);
@@ -387,10 +398,10 @@ int  pilihPemain(){
 	do{
 		pilihMode:
 		system("cls");
-		gotoxy(47,9); printf("Pilih Pemain");
-		gotoxy(47,11); printf("1. manusia vs manusia");
-		gotoxy(47,12); printf("2. manusia vs komputer");
-		gotoxy(47,14); printf("Masukkan nomor pilihan : ");
+		gotoxy(40,9); printf("Pilih Pemain");
+		gotoxy(40,11); printf("1. manusia vs manusia");
+		gotoxy(40,12); printf("2. manusia vs komputer");
+		gotoxy(40,14); printf("Masukkan nomor pilihan : ");
 		scanf("%d", &pilih);
 		
 		switch(pilih){
@@ -400,14 +411,14 @@ int  pilihPemain(){
 			case 2 : 
 				pemain = 1;
 				system("cls");
-				gotoxy(34,9); printf("\a Maaf pilihan mode bermain masih dalam tahap ");
-				gotoxy(34,10); printf("\a pengembangan harap coba menu lain terlebih dahulu");
+				gotoxy(38,9); printf("\a Maaf pilihan mode bermain masih dalam tahap ");
+				gotoxy(38,10); printf("\a pengembangan harap coba menu lain terlebih dahulu");
 				Sleep(4000);
 				goto pilihMode;
 				break;
 			default : 
 				system("cls");
-				gotoxy(35,9); printf("\a Maaf pilihan mode bermain tidak tersedia");
+				gotoxy(38,14); printf("\a Maaf pilihan mode bermain tidak tersedia");
 				Sleep(2000);
 				break;
 		}
@@ -418,11 +429,11 @@ int  pilihPemain(){
 
 void inputNama(int pilihan){
 	system("cls");
-	gotoxy(20,7); printf("Pastikan mengisi nama dengan benar, karena hanya 1 kali kesempatan.");
+	gotoxy(20,8); printf("Pastikan mengisi nama dengan benar, karena hanya 1 kali kesempatan.");
 	if(pilihan == 2){
-		gotoxy(20,10); printf("Nama Pemain 1 (maks. 30 karakter): ");
+		gotoxy(20,11); printf("Nama Pemain 1 (maks. 30 karakter): ");
 		scanf("%s", Pemain[0].nama_pemain);
-		gotoxy(20,12); printf("Nama Pemain 2 (maks. 30 karakter): ");
+		gotoxy(20,13); printf("Nama Pemain 2 (maks. 30 karakter): ");
 		scanf("%s", Pemain[1].nama_pemain);
 	}
 	else{
@@ -459,8 +470,9 @@ int pilihLevel(){
 			case 3 : level = 3;
 				break;
 			default : 
-				printf("\a Maaf pilihan level bermain tidak tersedia");
-				Sleep(3000);
+				system("cls");
+				gotoxy(38,14); printf("\a Maaf pilihan level bermain tidak tersedia");
+				Sleep(2000);
 				goto pilihlevel;
 				break;
 		}
@@ -816,7 +828,7 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 }
 
 void susunHuruf(char *kata, int giliran){
-	char tempHuruf[7] = " ";
+	char tempHuruf[] = {[7]='\0'};
 	int length, panjang;
 	int counter1, counter2, counter3;
 	bool status;
@@ -1015,10 +1027,18 @@ void randomHuruf(int sisa, int giliran, int kurang){
     		k++;
 		}
 	}
-    srand(time(0));
+	length = strlen(huruf);
+	if(length > 7){
+		srand(time(0));
         for(i=0;i<kurang;i++){
-        string[i]=huruf[rand() % sisa];
-    }
+        	string[i]=huruf[rand() % sisa];
+    	}
+	}
+	else{
+		for(i=0; i<length; i++){
+			string[i] = huruf[i];
+		}
+	}
     
     i = 0;
     j = 7 - kurang;
