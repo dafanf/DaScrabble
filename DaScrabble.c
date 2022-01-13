@@ -1134,7 +1134,8 @@ int hitungSisa(){
 
 void randomHuruf(int sisa, int giliran, int kurang){
 	/*
-		Author : Dafa /ditambah modifikasi oleh Salsabila
+		Referensi : Scrabble milik kelompok A9
+		Author : Dafa ditambah/ dimodifikasi oleh Salsabila
 		Prosedur untuk mengacak huruf yang akan diberikan
 		kepada pemain di setiap gilirannya
 	*/
