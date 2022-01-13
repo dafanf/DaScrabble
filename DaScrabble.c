@@ -1,3 +1,11 @@
+/*
+	Judul  	: DaScrabble
+	Author 	: Kelompok A11
+			  - Dafa Nurul Fauziansyah   (211524006)
+			  - Salsabila Maharani Putri (211524026)
+	Versi 1	: Desember 2021 
+*/
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -5,51 +13,50 @@
 #include<ctype.h>
 #include<windows.h>
 #include<time.h>
-//Deklarasi Modul Menu
+
+/* Modul Menu Utama */
 void tampilMenu();
 void mulaiPermainan();
+void readHighscores();
+void readHTPFile();
 void tampilTentang();
 void endProgram();
 
-//Deklarasi Modul Pengisian Data Pemain
+/* Modul Inisialisasi Pemain */
 int  registPemain();
 int  pilihPemain();
 void inputNama(int pilihan);
 int  pilihLevel();
 
-//Deklarasi Modul Inisialisasi Permainan
+/* Modul Inisialisasi Permainan */
 void inisialisasiPapan();
 void inisialisasiHuruf();
-int hitungSisa();
+int  hitungSisa();
 void randomHuruf(int sisa, int giliran, int kurang);
 void showHuruf(int giliran);
 void showPoin(int giliran);
 void kurangiHuruf(char *string);
 
-//Deklarasi Modul saat permainan
+/* Modul Permainan */
 void printPapan();
-int getPosisi(int *baris, int *kolom);
-int getArah(int *arah);
-int getKata(char *kata, int baris, int kolom, int arah);
+int  getPosisi(int *baris, int *kolom);
+int  getArah(int *arah);
+int  getKata(char *kata, int baris, int kolom, int arah);
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran);
-int cekHuruf(char *kata, int giliran);
-void susunHuruf(char *kata, int giliran); //untuk mengurangi huruf yang dimiliki pemain yang telah disubmit ke papan
-int startTimer();
-int finishTimer();
-int timerCountdown(int *jumlahPass, int levelPermainan, int lastTime);
-
-//Deklarasi Modul validasi posisi kata pada papan
-int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int level);
+int  cekHuruf(char *kata, int giliran);
+void susunHuruf(char *kata, int giliran); 
+int  startTimer();
+int  finishTimer();
+int  timerCountdown(int *jumlahPass, int levelPermainan, int lastTime);
+int  cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int level);
 void insertKePapan(char *temp, int baris, int kolom, int arah);
-
-//Deklarasi Modul yang berhubungan dengan File
-int cekKamus(char *kata, int level);
-void readHighscores();
+int  cekKamus(char *kata, int level);
 void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru);
-void readHTPFile();
 
-//Modul gotoxy untuk posisi
+/*Modul gotoxy untuk posisi*/
 void gotoxy(int x, int y);
+
+/* Tipe data bentukan */
 typedef struct {
 	char huruf;
 	int nilaiHuruf;
@@ -76,7 +83,8 @@ typedef struct{
 	int score;
 	char level[10];
 }highScore;
-//Kamus Data Global
+
+/*Kamus Data Variable Global*/
 IsiPapan Papan[15][15];
 DataHuruf Huruf[27];
 DataPemain Pemain[2];
@@ -95,6 +103,10 @@ void gotoxy(int x, int y) {
 }
 
 void tampilMenu(){
+	/*
+		Author : Dafa 
+		Prosedur menampilkan menu utama
+	*/
 	int pilihMenu;
 	
 	//Program
@@ -127,6 +139,10 @@ void tampilMenu(){
 }
 
 void readHighscores(){
+	/*
+		Author : Dafa 
+		Prosedur menampilkan data highscore
+	*/
     char nama[100];
     int umur;
     char level[10];
@@ -146,6 +162,10 @@ void readHighscores(){
 }
 
 void readHTPFile(){
+	/*
+		Author : Dafa 
+		Prosedur menampilkan cara bermain
+	*/
     char rules[255];
 	FILE *in=fopen("htp.txt","r");//perintah untuk membuka file dengan mode r / read
 	system("cls");
@@ -163,6 +183,10 @@ void readHTPFile(){
 }
 
 void tampilTentang(){
+	/*
+		Author : Dafa 
+		Prosedur menampilkan tentang aplikasi
+	*/
 	char rules[255];
 	FILE *in=fopen("tentang.txt","r");//perintah untuk membuka file dengan mode r / read
 	system("cls");
@@ -180,6 +204,10 @@ void tampilTentang(){
 }
 
 void endProgram(){
+	/*
+		Author : Dafa 
+		Prosedur untuk mengakhiri program
+	*/
 	char pilihanKeluar;
 	gotoxy(40,19); printf("Apakah anda yakin ingin keluar ? [Y/N] ");fflush(stdin);scanf("%c", &pilihanKeluar);
 	if(pilihanKeluar == 'Y' || pilihanKeluar == 'y'){
@@ -199,6 +227,10 @@ void endProgram(){
 }
 
 void mulaiPermainan(){
+	/*
+		Author : Salsabila
+		Prosedur dimulainya rangkaian permainan
+	*/
 	int i, kurang;
 	int level; 
 	int pilihMain;
@@ -219,8 +251,8 @@ void mulaiPermainan(){
 	level = registPemain();
 	
 	system("cls");
-	inisialisasiHuruf(); //pengisian nilai huruf yang tersedia, huruf, poin, serta jumlahnya
-	inisialisasiPapan(); //pengisian nilai awal papan
+	inisialisasiHuruf(); 
+	inisialisasiPapan(); 
 	
 	do{
 		nexturn:
@@ -245,7 +277,7 @@ void mulaiPermainan(){
 		printf("\n  %s vs. %s", Pemain[0].nama_pemain, Pemain[1].nama_pemain);
 		printf("\n  Skor %s : %d \t\t Skor %s : %d\n\n", Pemain[0].nama_pemain, Pemain[0].score, Pemain[1].nama_pemain, Pemain[1].score);
 		
-		printPapan(); //menampilkan papan dan isinya
+		printPapan(); 
 		
 		panjang = strlen(Pemain[giliran].huruf);
 		kurang = 7 - panjang;
@@ -379,6 +411,11 @@ void mulaiPermainan(){
 }
 
 int registPemain(){
+	/*
+		Author : Salsabila
+		Fungsi pemanggilan rangkaian inisialisasi pemain
+		mengembalikan hasil pilihan level 
+	*/
 	int pilihanPemain;
 	int pilihanLevel;
 	
@@ -392,6 +429,10 @@ int registPemain(){
 }
 
 int  pilihPemain(){
+	/*
+		Author : Salsabila
+		Fungsi memilih lawan dalam permainan
+	*/
 	int pilih;
 	int pemain;
 	
@@ -428,6 +469,10 @@ int  pilihPemain(){
 }
 
 void inputNama(int pilihan){
+	/*
+		Author : Salsabila 
+		Prosedur pengisian nama pemain
+	*/
 	system("cls");
 	gotoxy(20,8); printf("Pastikan mengisi nama dengan benar, karena hanya 1 kali kesempatan.");
 	if(pilihan == 2){
@@ -449,6 +494,10 @@ void inputNama(int pilihan){
 }
 
 int pilihLevel(){
+	/*
+		Author : Salsabila 
+		Fungsi pemilihan level bermain
+	*/
 	int pilih;
 	int level;
 	
@@ -483,6 +532,11 @@ int pilihLevel(){
 }
 
 void inisialisasiHuruf(){
+	/* 	
+		Author : Dafa 
+		Prosedur pengisian data huruf untuk permainan
+		hurufnya apa, poin si hurufnya berapa, jumlah hurufnya berapa 
+	*/
 	char huruf;
 	int nilaiHuruf;
 	int jumlah;
@@ -503,6 +557,11 @@ void inisialisasiHuruf(){
 }
 
 void inisialisasiPapan(){
+	/*
+		Author : Salsabila 
+		Prosedur pengisian data awal kotak-kotak pada papan
+		memberi nilai jika di kotak tersebut ada poin bonus atau tidak
+	*/
 	int i, j;
 	
 	for(i=0; i<15; i++){
@@ -546,6 +605,10 @@ void inisialisasiPapan(){
 }
 
 void printPapan(){
+	/*
+		Author : Salsabila
+		Prosedur menampilkan papan permainan
+	*/
 	int i, x, y;
 	char temp;
 	
@@ -584,7 +647,7 @@ void printPapan(){
 			else{
 				temp = Papan[y][x].isiHuruf;
 			}
-			printf(" %c \xb3",toupper(temp));				// X | O | X | O | X |
+			printf(" %c \xb3",toupper(temp));				// A | B | C | D | E | isi kotak
 		}
 
 		printf((y<15-1) ? "\n \xc3" : "\n \xc0");
@@ -596,6 +659,11 @@ void printPapan(){
 }
 
 int getPosisi(int *baris, int *kolom){
+	/*
+		Author : Dafa
+		Fungsi untuk get inputan posisi dari pemain
+		di return hasil valid atau tidaknya
+	*/
 	char row;
 	int col;
 	
@@ -623,6 +691,11 @@ int getPosisi(int *baris, int *kolom){
 }
 
 int getArah(int *arah){
+	/*
+		Author : Dafa
+		Fungsi untuk get inputan arah horizontal/vertikal dari pemain
+		di return hasil valid atau tidaknya
+	*/
 	char dir;
 	pilihArah:
 	printf("\n  Masukkan arah susuh Horizontal(H) atau Vertikal(V), (ENTER) untuk mengulang : ");
@@ -650,6 +723,11 @@ int getArah(int *arah){
 }
 
 int getKata(char *kata, int baris, int kolom, int arah){
+	/*
+		Author : Dafa
+		Fungsi untuk get inputan susunan huruf/kata dari pemain
+		di return hasil valid atau tidaknya
+	*/
 	int length;
 	int i=0;
 	fflush(stdin);
@@ -682,6 +760,12 @@ int getKata(char *kata, int baris, int kolom, int arah){
 }
 
 int cekHuruf(char *kata, int giliran){
+	/*
+		Author : Salsabila
+		Fungsi untuk mengecek huruf yang diinput pemain
+		huruf arus sesuai dengan yang diberikan saat giliran
+		di return hasil valid atau tidaknya
+	*/
 	int i, j;
 	int c = 0;
 	int length, panjang;
@@ -713,6 +797,13 @@ int cekHuruf(char *kata, int giliran){
 }
 
 int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int level){
+	/*
+		Author : Salsabila
+		Fungsi untuk mengecek kata yang disusun, poisinya valid atau tidak
+		pemain pertama harus mengenai kotak tengah atau h8, kemudian
+		penyusunan selanjutnya harus berdempetan dengan huruf yang sudah ada di papan
+		di return hasil valid atau tidaknya
+	*/
 	char temp[15] = " ";
 	int i = baris;
 	int j = kolom;
@@ -723,6 +814,7 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 	int length, l;
 	bool ada = true;
 	
+	//Mengecek apakah ada huruf di kotak sebelum posisi yang dipilih pemain
 	while(ada){
 		if(arah==0){
 			if(Papan[i][j-1].isiHuruf != ' '){
@@ -746,6 +838,8 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 	kolom = j;
 	valid = 0;
 	l = strlen(kata);
+	
+	//Mengambil huruf yang sudah ada di papan untuk disatukan dengan inputan pemain, sehingga menyusun satu kata
 	while(status && c<l){
 		if(Papan[7][7].isiHuruf == ' '){
 			if(i == 7 && j == 7){
@@ -828,6 +922,12 @@ int cekPosisiKata(char *kata, int baris, int kolom, int arah, int giliran, int l
 }
 
 void susunHuruf(char *kata, int giliran){
+	/*
+		Author : Salsabila
+		Prosedur untuk menyusun ulang huruf yang dipegang oleh pemain,
+		ketika pemain sudah menginputkan jawaban dan valid, 
+		maka huruf yang dipegang oleh pemain tadi akan dihapus di sini
+	*/
 	char tempHuruf[] = {[7]='\0'};
 	int length, panjang;
 	int counter1, counter2, counter3;
@@ -877,6 +977,10 @@ void susunHuruf(char *kata, int giliran){
 }
 
 void insertKePapan(char *temp, int baris, int kolom, int arah){
+	/*
+		Author : Salsabila
+		Prosedur menambahkan huruf yang berhasil disusun pemain ke papan
+	*/
 	int length, k;
 	int i = baris;
 	int j = kolom;
@@ -898,6 +1002,10 @@ void insertKePapan(char *temp, int baris, int kolom, int arah){
 }
 
 int cekKamus(char *kata, int level){
+	/*
+		Author : Dafa 
+		Fungsi untuk mengecek jawaban pemain ke kamus
+	*/
     char nama[100];
     kata = strlwr(kata);
     if(level == 1){
@@ -942,6 +1050,10 @@ int cekKamus(char *kata, int level){
 }
 
 void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran){
+	/*
+		Author : Salsabila
+		Prosedur menghitung score yang diperoleh pemain
+	*/
 	int score = 0;
 	int multiplier = 0;
 	int i, j;
@@ -1003,6 +1115,12 @@ void hitungScore(char *jawaban, int baris, int kolom, int arah, int giliran){
 }
 
 int hitungSisa(){
+	/*
+		Author : Salsabila
+		Fungsi untuk menghitung jumlah sisa huruf 
+		yang disediakan untuk satu permainan
+		nilai awalnya adalah 100
+	*/
 	int i;
 	int sisa=0;
 	
@@ -1014,6 +1132,11 @@ int hitungSisa(){
 }
 
 void randomHuruf(int sisa, int giliran, int kurang){
+	/*
+		Author : Dafa /ditambah modifikasi oleh Salsabila
+		Prosedur untuk mengacak huruf yang akan diberikan
+		kepada pemain di setiap gilirannya
+	*/
 	int i, j, k=0;
 	int length;
     char string[]={[7]='\0'};
@@ -1052,6 +1175,11 @@ void randomHuruf(int sisa, int giliran, int kurang){
 }
 
 void showPoin(int giliran){
+	/*
+		Author : Salsabila
+		Prosedur untuk menampilkan poin
+		dari huruf acak yang diberikan
+	*/
 	int i, j;
 	
 	for(i=0; i<7; i++){
@@ -1064,6 +1192,11 @@ void showPoin(int giliran){
 }
 
 void showHuruf(int giliran){
+	/*
+		Author : Salsabila
+		Prosedur untuk menampilkan huruf
+		apa saja yang diberikan untuk pemain
+	*/
 	int i, length;
 	
 	length = strlen(Pemain[giliran].huruf);
@@ -1073,6 +1206,11 @@ void showHuruf(int giliran){
 }
 
 void kurangiHuruf(char *string){
+	/*
+		Author : Salsabila
+		Prosedur untuk mengurangi jumlah huruf
+		di persediaan ketika huruf tersebut telah diberikan kepada pemain
+	*/
 	int i, j;
 	int length;
 	
@@ -1087,6 +1225,14 @@ void kurangiHuruf(char *string){
 }
 
 void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
+	/*
+		Author : Dafa
+		Prosedur untuk mencatat highscore.
+		Highscore yang dicatat hanya 5, 
+		sehingga akan selalu dilakukan pengecekan apakah score 
+		pemenang yang baru melebihi score yang sudah tercatat
+		jika iya maka score tersebut akan dicatat dan yang lebih kecil akan terhapus
+	*/
 	highScore testHighscore[6];
     bool isMengisi = false;
     int i = 0;
@@ -1122,21 +1268,32 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	tampilMenu();
 }
 
-int startTimer()
-{
+int startTimer(){
+	/*
+		Author : Dafa
+		Fungsi untuk mengambil waktu ketika giliran pemain dimulai
+	*/
     clock_t timeStart;
     timeStart = clock();
     return timeStart;
 }
 
-int finishTimer()
-{
+int finishTimer(){
+	/*
+		Author : Dafa
+		Fungsi untuk mengambil waktu ketika pemain selesai menginput
+	*/
     clock_t timeEnd;
     timeEnd = clock();
     return timeEnd;
 }
 
 int timerCountdown(int *jumPass, int levelPermainan, int lastTime){
+	/*
+		Author : Dafa
+		Fungsi untuk mengecek apakah waktu yang digunakan oleh pemain
+		melebihi batasnya atau tidak
+	*/
 	int timeLimit;
 	double time_in_sec = 0.0;
 	time_in_sec = ((double)lastTime)/CLOCKS_PER_SEC;
@@ -1157,7 +1314,6 @@ int timerCountdown(int *jumPass, int levelPermainan, int lastTime){
         return 0;
     }
     else{
-        //printf("\n  berhasil %.2f\n", time_in_sec);
         return 1;
     }
 }
