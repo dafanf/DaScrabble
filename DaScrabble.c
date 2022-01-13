@@ -142,6 +142,7 @@ void readHighscores(){
 	/*
 		Author : Dafa 
 		Prosedur menampilkan data highscore
+		referensi : https://www.mahirkoding.com/operasi-file-dalam-bahasa-c/
 	*/
     char nama[100];
     int umur;
@@ -1228,7 +1229,7 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	/*
 		Author : Dafa
 		Prosedur untuk mencatat highscore.
-		Highscore yang dicatat hanya 5, 
+		Highscore yang dicatat hanya 6, 
 		sehingga akan selalu dilakukan pengecekan apakah score 
 		pemenang yang baru melebihi score yang sudah tercatat
 		jika iya maka score tersebut akan dicatat dan yang lebih kecil akan terhapus
@@ -1246,12 +1247,15 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 	else{
     	strcpy(stringLevel, "Hard");
 	}
-	FILE *in=fopen("updatedHighscore.txt","r+");//perintah untuk membuka file dengan mode r / read
+	//perintah untuk membuka file dengan mode r+ / read lalu akan dilakukan lagi proses write
+	FILE *in=fopen("updatedHighscore.txt","r+");
     while(!feof(in)){
         fscanf(in,"%[^#]#%d#%[^\n]\n", &testHighscore[i].nama, &testHighscore[i].score, &testHighscore[i].level);fflush(stdin);
         i++;
     }
-	fclose(in);//perintah untuk menutup file yang tadi dibuka
+    //perintah untuk menutup file yang tadi dibuka
+	fclose(in);
+	//perintah untuk membuka file dengan mode w / write
 	FILE *out=fopen("updatedHighscore.txt","w");
 	for(i = 0; i < 6;i++){
         if(scoreBaru >= testHighscore[i].score && isMengisi==false){
@@ -1262,12 +1266,14 @@ void writeHighscores(char namaBaru[100], int scoreBaru, int levelBaru){
 			fprintf(out,"%s#%d#%s\n", testHighscore[i].nama, testHighscore[i].score, testHighscore[i].level);
 		}
 	}
+	//perintah untuk menutup file yang tadi dibuka
 	fclose(out);
 	printf("Tekan enter untuk melanjutkan......");
 	getch();
 	tampilMenu();
 }
 
+/*Referensi module timer dibawah : Scrabble milik kelompok A9*/
 int startTimer(){
 	/*
 		Author : Dafa
